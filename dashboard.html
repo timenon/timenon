@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timenon Ambassador Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+        .noise {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Login screen */
+        .login-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #18181b 100%);
+            border: 1px solid #27272a;
+        }
+        .code-input {
+            background: #09090b;
+            border: 1px solid #3f3f46;
+            border-radius: 14px;
+            padding: 16px 20px;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s ease;
+            text-align: center;
+        }
+        .code-input:focus { border-color: #ffffff; }
+        .code-input::placeholder { color: #52525b; font-weight: 400; letter-spacing: 0.05em; text-transform: none; }
+
+        /* Dashboard */
+        .stat-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #18181b 100%);
+            border: 1px solid #27272a;
+            border-radius: 20px;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .stat-card:hover { border-color: #52525b; transform: translateY(-2px); }
+
+        .earning-row {
+            border-bottom: 1px solid #18181b;
+            transition: background 0.2s ease;
+        }
+        .earning-row:last-child { border-bottom: none; }
+        .earning-row:hover { background: #0f0f0f; }
+
+        .badge-paid {
+            background: rgba(34,197,94,0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34,197,94,0.2);
+        }
+        .badge-unpaid {
+            background: rgba(251,191,36,0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(251,191,36,0.2);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-delay-1 { animation-delay: 0.1s; }
+        .fade-delay-2 { animation-delay: 0.2s; }
+        .fade-delay-3 { animation-delay: 0.3s; }
+        .fade-delay-4 { animation-delay: 0.4s; }
+
+        /* Progress bar */
+        .progress-bar {
+            background: linear-gradient(90deg, #ffffff 0%, #a1a1aa 100%);
+            border-radius: 99px;
+            transition: width 1s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid #27272a;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Magnetic button */
+        .magnetic-btn { transition: all 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .magnetic-btn:hover { transform: scale(1.04); }
+
+        /* Scrollbar */
+        .custom-scroll { scrollbar-width: thin; scrollbar-color: #3f3f46 #09090b; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #09090b; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+
+        /* Glitch */
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; opacity: 0;
+        }
+        .glitch-text:hover::before {
+            animation: glitch-1 0.3s both infinite;
+            color: #ff0000; z-index: -1; opacity: 0.8;
+        }
+        .glitch-text:hover::after {
+            animation: glitch-2 0.3s reverse both infinite;
+            color: #00ff00; z-index: -2; opacity: 0.8;
+        }
+        @keyframes glitch-1 {
+            0%,100% { transform: translate(0); }
+            20% { transform: translate(-2px,2px); }
+            60% { transform: translate(2px,2px); }
+        }
+        @keyframes glitch-2 {
+            0%,100% { transform: translate(0); }
+            20% { transform: translate(2px,-2px); }
+            60% { transform: translate(-2px,-2px); }
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen overflow-x-hidden selection:bg-white selection:text-black">
+    <div class="noise"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-40 px-6 py-5 bg-black/80 backdrop-blur-md border-b border-zinc-900">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="font-display text-xl font-bold tracking-tighter glitch-text" data-text="TIMENON">TIMENON</a>
+            <div class="flex items-center gap-4">
+                <span class="text-zinc-600 text-sm hidden md:block">Ambassador Portal</span>
+                <a href="index.html" class="text-zinc-400 hover:text-white text-sm transition-colors flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-3 h-3"></i> Back to site
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- LOGIN SCREEN                              -->
+    <!-- ══════════════════════════════════════════ -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4 pt-20">
+        <div class="w-full max-w-md">
+            <!-- Logo area -->
+            <div class="text-center mb-10 fade-in">
+                <div class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-5">
+                    <i data-lucide="users" class="w-7 h-7 text-zinc-300"></i>
+                </div>
+                <h1 class="font-display text-3xl font-bold mb-2">Ambassador Dashboard</h1>
+                <p class="text-zinc-500 text-sm">Enter your referral code to view your earnings and stats.</p>
+            </div>
+
+            <!-- Login card -->
+            <div class="login-card rounded-2xl p-8 fade-in fade-delay-1">
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-3 font-medium">Your Referral Code</label>
+                <input type="text" id="codeInput" class="code-input mb-2"
+                    placeholder="e.g. TIMENON-YOURNAME"
+                    onkeydown="if(event.key==='Enter') loadDashboard()"
+                    oninput="this.value=this.value.toUpperCase()">
+                <p class="text-zinc-600 text-xs mb-6 text-center">This is the code we sent to your email when you were approved.</p>
+
+                <!-- Error message -->
+                <div class="hidden mb-4 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 flex items-center gap-2" id="loginError">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 flex-shrink-0"></i>
+                    <p class="text-red-400 text-sm" id="loginErrorMsg">Code not found. Check your email and try again.</p>
+                </div>
+
+                <button onclick="loadDashboard()" id="loginBtn"
+                    class="magnetic-btn w-full bg-white text-black py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all">
+                    <span id="loginBtnText">View My Dashboard</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4" id="loginBtnIcon"></i>
+                </button>
+            </div>
+
+            <p class="text-center text-zinc-700 text-xs mt-6 fade-in fade-delay-2">
+                Not an ambassador yet?
+                <a href="index.html#ambassador" class="text-zinc-400 hover:text-white transition-colors underline underline-offset-2">Apply here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- DASHBOARD SCREEN                          -->
+    <!-- ══════════════════════════════════════════ -->
+    <div id="dashboardScreen" class="hidden min-h-screen pt-24 pb-16 px-4">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 fade-in">
+                <div>
+                    <p class="text-zinc-500 text-sm tracking-wider uppercase mb-1">Welcome back</p>
+                    <h2 class="font-display text-3xl md:text-4xl font-bold" id="dashAmbassadorName">Ambassador</h2>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-zinc-500 text-sm">Active Ambassador</span>
+                        <span class="text-zinc-700">·</span>
+                        <span class="text-zinc-500 text-sm font-mono" id="dashCode">TIMENON-XXX</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="refreshDashboard()" class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 px-4 py-2.5 rounded-full text-sm transition-all">
+                        <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
+                        Refresh
+                    </button>
+                    <button onclick="logout()" class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 px-4 py-2.5 rounded-full text-sm transition-all">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <!-- Total Earnings -->
+                <div class="stat-card p-6 col-span-2 fade-in fade-delay-1">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <span class="text-xs text-zinc-600 uppercase tracking-wider">All time</span>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Total Earnings</p>
+                    <p class="font-display text-3xl font-bold" id="statTotalEarnings">NGN 0</p>
+                    <div class="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                        <div class="progress-bar h-full" id="earningsBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Unpaid -->
+                <div class="stat-card p-6 fade-in fade-delay-2">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="clock" class="w-5 h-5 text-amber-400"></i>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Pending Payout</p>
+                    <p class="font-display text-2xl font-bold text-amber-400" id="statUnpaid">NGN 0</p>
+                </div>
+
+                <!-- Paid Out -->
+                <div class="stat-card p-6 fade-in fade-delay-2">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Total Paid Out</p>
+                    <p class="font-display text-2xl font-bold text-green-400" id="statPaid">NGN 0</p>
+                </div>
+
+                <!-- Total Referrals -->
+                <div class="stat-card p-6 fade-in fade-delay-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center mb-4">
+                        <i data-lucide="users" class="w-5 h-5 text-zinc-300"></i>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Total Referrals</p>
+                    <p class="font-display text-2xl font-bold" id="statReferrals">0</p>
+                </div>
+
+                <!-- Orders Value -->
+                <div class="stat-card p-6 fade-in fade-delay-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center mb-4">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-zinc-300"></i>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Orders Generated</p>
+                    <p class="font-display text-2xl font-bold" id="statOrdersValue">NGN 0</p>
+                </div>
+
+                <!-- Latest Payout -->
+                <div class="stat-card p-6 fade-in fade-delay-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center mb-4">
+                        <i data-lucide="calendar" class="w-5 h-5 text-zinc-300"></i>
+                    </div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Last Referral</p>
+                    <p class="font-display text-lg font-bold" id="statLastReferral">—</p>
+                </div>
+            </div>
+
+            <!-- Payout notice -->
+            <div class="bg-amber-500/5 border border-amber-500/15 rounded-2xl p-5 mb-8 flex items-start gap-4 fade-in fade-delay-3">
+                <i data-lucide="info" class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <p class="text-amber-400 font-semibold text-sm mb-1">Monthly Payouts</p>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Earnings marked <span class="text-amber-400 font-medium">PENDING</span> are paid out at the end of every month. If you have questions about your payout, contact us at <a href="mailto:timenontheconfidencebrand@gmail.com" class="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors">timenontheconfidencebrand@gmail.com</a></p>
+                </div>
+            </div>
+
+            <!-- Referral Orders Table -->
+            <div class="stat-card overflow-hidden fade-in fade-delay-4">
+                <div class="p-6 border-b border-zinc-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div>
+                        <h3 class="font-display text-xl font-bold">Your Referrals</h3>
+                        <p class="text-zinc-500 text-sm mt-1">Every order made with your code</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-zinc-500">
+                        <div class="w-2 h-2 rounded-full bg-amber-400"></div> Pending
+                        <div class="w-2 h-2 rounded-full bg-green-400 ml-2"></div> Paid
+                    </div>
+                </div>
+
+                <!-- Loading state -->
+                <div class="flex items-center justify-center py-16 hidden" id="tableLoading">
+                    <div class="spinner"></div>
+                </div>
+
+                <!-- Empty state -->
+                <div class="flex flex-col items-center justify-center py-16 hidden" id="tableEmpty">
+                    <i data-lucide="inbox" class="w-10 h-10 text-zinc-700 mb-3"></i>
+                    <p class="text-zinc-500 font-medium">No referrals yet</p>
+                    <p class="text-zinc-700 text-sm mt-1">Share your code to start earning</p>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto custom-scroll" id="tableContainer">
+                    <table class="w-full text-sm" id="earningsTable">
+                        <thead>
+                            <tr class="border-b border-zinc-800">
+                                <th class="text-left text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4">Date</th>
+                                <th class="text-left text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4">Customer</th>
+                                <th class="text-left text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4 hidden md:table-cell">Order Ref</th>
+                                <th class="text-right text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4 hidden md:table-cell">Order Total</th>
+                                <th class="text-right text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4">Your Cut</th>
+                                <th class="text-center text-zinc-500 text-xs uppercase tracking-wider font-medium px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earningsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Share your code -->
+            <div class="mt-8 stat-card p-6 fade-in fade-delay-4">
+                <h3 class="font-display text-lg font-bold mb-4">Share Your Code</h3>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-3 flex items-center justify-between gap-4">
+                        <span class="font-mono font-bold tracking-widest text-white" id="shareCodeDisplay">TIMENON-XXX</span>
+                        <button onclick="copyCode()" class="text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 text-sm flex-shrink-0" id="copyBtn">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                            <span id="copyBtnText">Copy</span>
+                        </button>
+                    </div>
+                    <a id="whatsappShareBtn" href="#" target="_blank"
+                        class="magnetic-btn flex items-center justify-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#1ebe5d] transition-colors flex-shrink-0">
+                        <svg viewBox="0 0 32 32" class="w-4 h-4 fill-white"><path d="M16.002 2C8.27 2 2 8.268 2 15.998c0 2.49.65 4.83 1.786 6.858L2 30l7.338-1.762A13.946 13.946 0 0016.002 30C23.73 30 30 23.73 30 16.002 30 8.27 23.73 2 16.002 2zm6.32 19.896c-.346-.174-2.05-1.01-2.368-1.126-.316-.114-.546-.172-.778.174-.23.346-.894 1.126-1.096 1.358-.2.23-.402.258-.748.086-.346-.174-1.46-.538-2.78-1.714-1.028-.916-1.722-2.046-1.924-2.392-.202-.346-.022-.532.152-.704.156-.156.346-.404.52-.606.172-.202.228-.346.344-.576.114-.232.058-.434-.028-.608-.088-.172-.778-1.876-1.066-2.568-.282-.674-.568-.582-.778-.592l-.664-.012c-.23 0-.604.086-.92.432-.316.346-1.208 1.18-1.208 2.876s1.236 3.336 1.408 3.566c.172.232 2.432 3.712 5.892 5.208.824.356 1.466.568 1.968.728.826.264 1.578.226 2.172.138.662-.1 2.05-.838 2.34-1.648.29-.81.29-1.504.202-1.648-.086-.144-.316-.23-.662-.404z"/></svg>
+                        Share on WhatsApp
+                    </a>
+                </div>
+                <p class="text-zinc-600 text-xs mt-3">When someone uses your code at checkout, they earn 10% cashback and you earn 10% of their order — automatically tracked here.</p>
+            </div>
+
+            <p class="text-center text-zinc-700 text-xs mt-10">
+                Data refreshes from the Timenon spreadsheet in real time.
+                Last updated: <span id="lastUpdated">—</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // ════════════════════════════════════════
+        // CONFIG — same sheet as the main site
+        // ════════════════════════════════════════
+        const SHEET_ID = '1JySdDWNHp9Ja6S_00EwVU8N1IlvGpf24CQTpbo8wmMw';
+
+        const AMBASSADOR_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Ambassador%20Earnings`;
+        const CODES_CSV_URL      = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Codes`;
+
+        let currentCode = '';
+        let currentName = '';
+
+        // ════════════════════════════════════════
+        // CSV PARSER
+        // ════════════════════════════════════════
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = parseCSVLine(lines[0]);
+            return lines.slice(1).map(line => {
+                const values = parseCSVLine(line);
+                const obj = {};
+                headers.forEach((h, i) => obj[h.trim()] = (values[i] || '').trim());
+                return obj;
+            }).filter(row => Object.values(row).some(v => v));
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += line[i];
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        // ════════════════════════════════════════
+        // FORMAT HELPERS
+        // ════════════════════════════════════════
+        function formatNGN(amount) {
+            const num = parseFloat(amount) || 0;
+            return 'NGN ' + num.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d)) return dateStr.split(',')[0] || dateStr;
+                return d.toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' });
+            } catch { return dateStr; }
+        }
+
+        function shortenRef(ref) {
+            if (!ref) return '—';
+            return ref.length > 18 ? ref.slice(0, 8) + '...' + ref.slice(-6) : ref;
+        }
+
+        // ════════════════════════════════════════
+        // LOAD DASHBOARD
+        // ════════════════════════════════════════
+        async function loadDashboard() {
+            const code = document.getElementById('codeInput').value.trim().toUpperCase();
+            if (!code) {
+                showLoginError('Please enter your referral code.');
+                return;
+            }
+
+            // Loading state
+            const btn     = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const btnIcon = document.getElementById('loginBtnIcon');
+            btn.disabled  = true;
+            btnText.textContent = 'Loading...';
+            btnIcon.className   = 'w-4 h-4 animate-spin';
+            hideLoginError();
+
+            try {
+                // 1. Verify code exists in Codes sheet
+                const codesRes  = await fetch(CODES_CSV_URL + '&t=' + Date.now());
+                const codesCSV  = await codesRes.text();
+                const codesData = parseCSV(codesCSV);
+
+                const codeRow = codesData.find(row =>
+                    (row['Code'] || '').toUpperCase() === code &&
+                    (row['Status'] || '').toUpperCase() === 'ACTIVE'
+                );
+
+                if (!codeRow) {
+                    showLoginError('Code not found or inactive. Check your email and try again.');
+                    btn.disabled = false;
+                    btnText.textContent = 'View My Dashboard';
+                    btnIcon.className   = 'w-4 h-4';
+                    return;
+                }
+
+                // 2. Fetch ambassador earnings
+                const ambRes  = await fetch(AMBASSADOR_CSV_URL + '&t=' + Date.now());
+                const ambCSV  = await ambRes.text();
+                const allRows = parseCSV(ambCSV);
+
+                // Filter rows for this ambassador
+                const myRows = allRows.filter(row =>
+                    (row['Referral Code'] || '').toUpperCase() === code
+                );
+
+                // Store for session
+                currentCode = code;
+                currentName = codeRow['Ambassador Name'] || code;
+                sessionStorage.setItem('ambCode', code);
+                sessionStorage.setItem('ambName', currentName);
+
+                // Show dashboard
+                renderDashboard(currentName, code, myRows);
+
+            } catch (err) {
+                console.error(err);
+                showLoginError('Could not load data. Make sure the sheet is published to web.');
+                btn.disabled = false;
+                btnText.textContent = 'View My Dashboard';
+                btnIcon.className   = 'w-4 h-4';
+            }
+        }
+
+        // ════════════════════════════════════════
+        // RENDER DASHBOARD
+        // ════════════════════════════════════════
+        function renderDashboard(name, code, rows) {
+            // Calculate stats
+            const totalEarnings  = rows.reduce((s, r) => s + (parseFloat(r['Ambassador Earning (NGN)']) || 0), 0);
+            const unpaidEarnings = rows.filter(r => (r['Payout Status'] || '').toUpperCase() !== 'PAID')
+                                       .reduce((s, r) => s + (parseFloat(r['Ambassador Earning (NGN)']) || 0), 0);
+            const paidEarnings   = rows.filter(r => (r['Payout Status'] || '').toUpperCase() === 'PAID')
+                                       .reduce((s, r) => s + (parseFloat(r['Ambassador Earning (NGN)']) || 0), 0);
+            const totalOrders    = rows.reduce((s, r) => s + (parseFloat(r['Order Total (NGN)']) || 0), 0);
+            const lastReferral   = rows.length > 0 ? formatDate(rows[rows.length - 1]['Date']) : '—';
+
+            // Update stat cards
+            document.getElementById('dashAmbassadorName').textContent = name;
+            document.getElementById('dashCode').textContent           = code;
+            document.getElementById('shareCodeDisplay').textContent   = code;
+            document.getElementById('statTotalEarnings').textContent  = formatNGN(totalEarnings);
+            document.getElementById('statUnpaid').textContent         = formatNGN(unpaidEarnings);
+            document.getElementById('statPaid').textContent           = formatNGN(paidEarnings);
+            document.getElementById('statReferrals').textContent      = rows.length;
+            document.getElementById('statOrdersValue').textContent    = formatNGN(totalOrders);
+            document.getElementById('statLastReferral').textContent   = lastReferral;
+            document.getElementById('lastUpdated').textContent        = new Date().toLocaleTimeString('en-NG');
+
+            // Progress bar — relative to NGN 500k milestone
+            const barPct = Math.min((totalEarnings / 500000) * 100, 100);
+            setTimeout(() => {
+                document.getElementById('earningsBar').style.width = barPct + '%';
+            }, 300);
+
+            // WhatsApp share link
+            const waMsg = encodeURIComponent(`Hey! I'm a Timenon Ambassador 🖤\n\nUse my referral code *${code}* when you shop at timenon.com and you'll earn 10% cashback on your order!\n\nShop here: https://timenon.com\n\n*Difficult, Not Impossible.* 🔥`);
+            document.getElementById('whatsappShareBtn').href = `https://wa.me/?text=${waMsg}`;
+
+            // Render table
+            const tbody = document.getElementById('earningsTableBody');
+            tbody.innerHTML = '';
+
+            if (rows.length === 0) {
+                document.getElementById('tableEmpty').classList.remove('hidden');
+                document.getElementById('tableContainer').classList.add('hidden');
+            } else {
+                document.getElementById('tableEmpty').classList.add('hidden');
+                document.getElementById('tableContainer').classList.remove('hidden');
+
+                // Sort newest first
+                const sorted = [...rows].reverse();
+                sorted.forEach((row, i) => {
+                    const isPaid   = (row['Payout Status'] || '').toUpperCase() === 'PAID';
+                    const customer = row['Referred Customer'] || '—';
+                    const firstName = customer.split(' ')[0];
+                    const tr = document.createElement('tr');
+                    tr.className = 'earning-row';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 text-zinc-400 text-sm whitespace-nowrap">${formatDate(row['Date'])}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300 flex-shrink-0">
+                                    ${firstName.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">${firstName}</p>
+                                    <p class="text-zinc-600 text-xs">${row['Referred Customer Email'] || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-zinc-500 text-xs font-mono hidden md:table-cell">${shortenRef(row['Order Reference'])}</td>
+                        <td class="px-6 py-4 text-zinc-400 text-sm text-right hidden md:table-cell">${formatNGN(row['Order Total (NGN)'])}</td>
+                        <td class="px-6 py-4 text-white font-semibold text-sm text-right">${formatNGN(row['Ambassador Earning (NGN)'])}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-xs font-semibold px-3 py-1.5 rounded-full ${isPaid ? 'badge-paid' : 'badge-unpaid'}">
+                                ${isPaid ? 'PAID' : 'PENDING'}
+                            </span>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Switch screens
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // ════════════════════════════════════════
+        // REFRESH
+        // ════════════════════════════════════════
+        async function refreshDashboard() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('animate-spin');
+            await loadDashboardSilent();
+            icon.classList.remove('animate-spin');
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('en-NG');
+        }
+
+        async function loadDashboardSilent() {
+            try {
+                const ambRes  = await fetch(AMBASSADOR_CSV_URL + '&t=' + Date.now());
+                const ambCSV  = await ambRes.text();
+                const allRows = parseCSV(ambCSV);
+                const myRows  = allRows.filter(row =>
+                    (row['Referral Code'] || '').toUpperCase() === currentCode
+                );
+                renderDashboard(currentName, currentCode, myRows);
+            } catch(err) { console.error('Refresh failed:', err); }
+        }
+
+        // ════════════════════════════════════════
+        // COPY CODE
+        // ════════════════════════════════════════
+        function copyCode() {
+            navigator.clipboard.writeText(currentCode).then(() => {
+                const btn  = document.getElementById('copyBtnText');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // ════════════════════════════════════════
+        // LOGIN HELPERS
+        // ════════════════════════════════════════
+        function showLoginError(msg) {
+            const el = document.getElementById('loginError');
+            document.getElementById('loginErrorMsg').textContent = msg;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+        function hideLoginError() {
+            const el = document.getElementById('loginError');
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('ambCode');
+            sessionStorage.removeItem('ambName');
+            currentCode = '';
+            currentName = '';
+            document.getElementById('codeInput').value = '';
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+
+        // ════════════════════════════════════════
+        // AUTO LOGIN from session
+        // ════════════════════════════════════════
+        window.addEventListener('load', async () => {
+            const savedCode = sessionStorage.getItem('ambCode');
+            const savedName = sessionStorage.getItem('ambName');
+            if (savedCode) {
+                currentCode = savedCode;
+                currentName = savedName || savedCode;
+                document.getElementById('codeInput').value = savedCode;
+                try {
+                    const ambRes  = await fetch(AMBASSADOR_CSV_URL + '&t=' + Date.now());
+                    const ambCSV  = await ambRes.text();
+                    const allRows = parseCSV(ambCSV);
+                    const myRows  = allRows.filter(row =>
+                        (row['Referral Code'] || '').toUpperCase() === savedCode
+                    );
+                    renderDashboard(currentName, savedCode, myRows);
+                } catch(e) { console.warn('Auto-login failed', e); }
+            }
+        });
+    </script>
+</body>
+</html>

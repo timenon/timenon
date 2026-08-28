@@ -1,0 +1,2902 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timenon | Difficult, Not Impossible</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .hero-text {
+            background: linear-gradient(180deg, #ffffff 0%, #52525b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .noise {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .reveal {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .js-animate .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .js-animate .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .letter-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .letter-card:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+        .product-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-20px);
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        .magnetic-btn {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .magnetic-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px -10px rgba(255,255,255,0.2);
+        }
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+        }
+        .glitch-text:hover::before {
+            animation: glitch-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            color: #ff0000;
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .glitch-text:hover::after {
+            animation: glitch-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+            color: #00ff00;
+            z-index: -2;
+            opacity: 0.8;
+        }
+        @keyframes glitch-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes glitch-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        .marquee {
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .cart-drawer {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .quantity-btn {
+            transition: all 0.2s ease;
+        }
+        .quantity-btn:hover {
+            background: #27272a;
+        }
+        .paystack-btn {
+            background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+        }
+        .paystack-btn:hover {
+            background: linear-gradient(135deg, #0096c7 0%, #023e8a 100%);
+        }
+        .success-modal {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        .success-modal.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+        .color-option {
+            transition: all 0.3s ease;
+        }
+        .size-option {
+            transition: all 0.2s ease;
+        }
+        .size-option.selected {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+        .product-image {
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gallery-item {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .gallery-item:hover {
+            transform: translateY(-8px);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        .gallery-item img {
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gallery-overlay {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        .cart-scroll-area {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #3f3f46 #18181b;
+            /* Prevent keyboard from blocking content on mobile */
+            overscroll-behavior: contain;
+        }
+        .cart-scroll-area::-webkit-scrollbar { width: 6px; }
+        .cart-scroll-area::-webkit-scrollbar-track { background: #18181b; }
+        .cart-scroll-area::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+
+        /* Mobile: when keyboard is open, cart still scrolls fully */
+        @media (max-width: 768px) {
+            .cart-drawer {
+                height: 100%;
+                height: 100dvh; /* dynamic viewport height — shrinks when keyboard opens */
+            }
+            .cart-scroll-area {
+                padding-bottom: env(keyboard-inset-height, 0px);
+            }
+        }
+
+        /* ── Shipbubble Delivery ── */
+        .courier-option {
+            border: 1px solid #3f3f46;
+            border-radius: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #09090b;
+        }
+        .courier-option:hover { border-color: #71717a; }
+        .courier-option.selected {
+            border-color: #ffffff;
+            background: #18181b;
+        }
+        .courier-option input[type="radio"] { display: none; }
+        .delivery-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid #3f3f46;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Referral code input ── */
+        .referral-input-wrap {
+            position: relative;
+        }
+        .referral-badge {
+            display: none;
+            animation: fadeSlide 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        .referral-badge.show { display: flex; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Ambassador section ── */
+        .ambassador-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #18181b 100%);
+            border: 1px solid #27272a;
+            transition: border-color 0.3s ease;
+        }
+        .ambassador-card:hover { border-color: #52525b; }
+        .perk-pill {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #27272a;
+        }
+        .amb-form-input {
+            width: 100%;
+            background: #18181b;
+            border: 1px solid #3f3f46;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+            outline: none;
+        }
+        .amb-form-input:focus { border-color: #ffffff; }
+        .amb-form-input::placeholder { color: #52525b; }
+        textarea.amb-form-input { resize: vertical; min-height: 100px; }
+
+        /* pulse ring on ambassador CTA */
+        .pulse-ring {
+            animation: pulseRing 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.15); }
+            70% { box-shadow: 0 0 0 16px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+
+        /* ── Scarcity Popup ── */
+        .scarcity-popup {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scarcity-popup.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+        .scarcity-bar {
+            background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+            transition: width 0s;
+        }
+        @keyframes urgencyPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .urgency-dot {
+            animation: urgencyPulse 1.5s ease-in-out infinite;
+        }
+
+        /* ── Reviews ── */
+        .review-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .review-card:hover {
+            transform: translateY(-6px);
+            border-color: #52525b;
+        }
+        .stars { color: #fbbf24; letter-spacing: 2px; }
+        .review-track {
+            display: flex;
+            gap: 24px;
+            animation: reviewScroll 35s linear infinite;
+            width: max-content;
+        }
+        .review-track:hover { animation-play-state: paused; }
+        @keyframes reviewScroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ── Dream Slider Popup ── */
+        .dream-popup-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .dream-popup-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .dream-popup {
+            transform: scale(0.88) translateY(30px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dream-popup-overlay.show .dream-popup {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .dream-congrats {
+            transform: scale(0.88) translateY(30px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dream-congrats.show {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Custom range slider */
+        .dream-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 99px;
+            outline: none;
+            cursor: pointer;
+            background: linear-gradient(to right, #ffffff 44%, #3f3f46 44%);
+        }
+        .dream-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.15), 0 4px 16px rgba(0,0,0,0.4);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .dream-slider::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 8px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.4);
+            transform: scale(1.15);
+        }
+        .dream-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.15);
+        }
+        .dream-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 0%, #71717a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.2s ease;
+        }
+        .dream-label {
+            transition: all 0.3s ease;
+        }
+        @keyframes sparkle {
+            0%   { transform: scale(0) rotate(0deg); opacity: 0; }
+            50%  { transform: scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+        .sparkle-icon { animation: sparkle 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+        /* ── WhatsApp Widget ── */
+        .wa-widget {
+            position: fixed;
+            bottom: 28px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .wa-bubble {
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            max-width: 240px;
+            position: relative;
+            transform: scale(0.8) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .wa-bubble.show {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        .wa-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 20px;
+            width: 0; height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #fff;
+        }
+        .wa-bubble p { color: #111; font-size: 0.8rem; line-height: 1.4; margin: 0; }
+        .wa-bubble .wa-close {
+            position: absolute;
+            top: -8px; right: -8px;
+            width: 20px; height: 20px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: white;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .wa-btn {
+            width: 58px; height: 58px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            animation: waPulse 2.5s ease-in-out infinite;
+        }
+        .wa-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(37,211,102,0.7);
+        }
+        @keyframes waPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
+            50%       { box-shadow: 0 4px 32px rgba(37,211,102,0.8), 0 0 0 8px rgba(37,211,102,0.1); }
+        }
+        .wa-btn svg { width: 30px; height: 30px; fill: white; }
+        .wa-notification-dot {
+            position: absolute;
+            top: 0; right: 0;
+            width: 14px; height: 14px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #000;
+            animation: waDotPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes waDotPulse {
+            0%, 100% { transform: scale(1); }
+            50%       { transform: scale(1.2); }
+        }
+    </style>
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1124329792104824');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1124329792104824&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+</head>
+<body class="bg-black text-white overflow-x-hidden selection:bg-white selection:text-black">
+
+    <div class="noise"></div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SCARCITY POPUP                            -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4" id="scarcityOverlay">
+        <div class="absolute inset-0 bg-black/85 backdrop-blur-sm" onclick="closeScarcityPopup()"></div>
+        <div class="scarcity-popup relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden" id="scarcityPopup">
+
+            <!-- Top urgency bar -->
+            <div class="h-1 w-full bg-zinc-800">
+                <div class="scarcity-bar h-full" id="scarcityBar" style="width: 35%"></div>
+            </div>
+
+            <!-- Close button -->
+            <button onclick="closeScarcityPopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors z-10">
+                <i data-lucide="x" class="w-4 h-4 text-zinc-400"></i>
+            </button>
+
+            <div class="p-8">
+                <!-- Live indicator -->
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="urgency-dot w-2 h-2 rounded-full bg-red-500"></div>
+                    <span class="text-red-400 text-xs font-semibold uppercase tracking-widest">Limited Stock Alert</span>
+                </div>
+
+                <!-- Headline -->
+                <h2 class="font-display text-2xl md:text-3xl font-bold mb-2 leading-tight">
+                    Only <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400" id="stockCount">7</span> units left<br>in this drop.
+                </h2>
+                <p class="text-zinc-400 text-sm mb-6 leading-relaxed">
+                    The Timenon T1 and T1 Pro are nearly sold out. Once they're gone, the next drop won't be for a while.
+                </p>
+
+                <!-- Stock bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-xs text-zinc-500 mb-2">
+                        <span>Stock remaining</span>
+                        <span class="text-orange-400 font-semibold">35% left</span>
+                    </div>
+                    <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                        <div class="scarcity-bar h-full rounded-full" style="width: 35%"></div>
+                    </div>
+                </div>
+
+                <!-- Social proof -->
+                <div class="flex items-center gap-3 bg-zinc-900 rounded-xl p-4 mb-6 border border-zinc-800">
+                    <div class="flex -space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-zinc-700 border-2 border-zinc-950 flex items-center justify-center text-xs font-bold">A</div>
+                        <div class="w-8 h-8 rounded-full bg-zinc-600 border-2 border-zinc-950 flex items-center justify-center text-xs font-bold">K</div>
+                        <div class="w-8 h-8 rounded-full bg-zinc-500 border-2 border-zinc-950 flex items-center justify-center text-xs font-bold">T</div>
+                        <div class="w-8 h-8 rounded-full bg-zinc-400 border-2 border-zinc-950 flex items-center justify-center text-xs font-bold text-black">+</div>
+                    </div>
+                    <p class="text-zinc-400 text-xs leading-relaxed">
+                        <span class="text-white font-semibold" id="viewerCount">23 people</span> are viewing the collection right now
+                    </p>
+                </div>
+
+                <!-- CTAs -->
+                <div class="flex flex-col gap-3">
+                    <a href="#products" onclick="closeScarcityPopup()" class="magnetic-btn bg-white text-black py-4 rounded-full font-semibold text-center text-sm hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
+                        Shop Before It's Gone
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <button onclick="closeScarcityPopup()" class="text-zinc-500 text-xs hover:text-zinc-300 transition-colors py-2">
+                        I'll take my chances
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- DREAM SLIDER POPUP                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="dream-popup-overlay fixed inset-0 z-[65] flex items-center justify-center p-4" id="dreamOverlay" onclick="handleDreamOverlayClick(event)">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm pointer-events-none"></div>
+
+        <!-- Slider screen -->
+        <div class="dream-popup relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-8 text-center" id="dreamSliderScreen">
+            <button onclick="closeDreamPopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+                <i data-lucide="x" class="w-4 h-4 text-zinc-400"></i>
+            </button>
+
+            <!-- Header -->
+            <p class="text-zinc-500 text-xs tracking-[0.3em] uppercase mb-3">Quick Question</p>
+            <h2 class="font-display text-2xl font-bold mb-2 leading-tight">How big is<br>your dream?</h2>
+            <p class="text-zinc-400 text-sm mb-8">Drag the slider and be honest with yourself.</p>
+
+            <!-- Score display -->
+            <div class="relative mb-6">
+                <div class="dream-number" id="dreamNumber">5</div>
+                <div class="text-zinc-500 text-sm mt-1">out of 10</div>
+            </div>
+
+            <!-- Dream label -->
+            <div class="dream-label text-base font-semibold mb-8 min-h-[1.5rem]" id="dreamLabel">Big enough to scare you 👀</div>
+
+            <!-- Slider -->
+            <div class="mb-8 px-2">
+                <input type="range" min="1" max="10" value="5"
+                    class="dream-slider w-full"
+                    id="dreamSlider"
+                    oninput="updateDreamSlider(this.value)"
+                    onchange="updateDreamSlider(this.value)"
+                    ontouchstart="updateDreamSlider(this.value)"
+                    ontouchmove="updateDreamSlider(this.value)">
+                <div class="flex justify-between text-zinc-600 text-xs mt-3 px-1">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                    <span>10</span>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button onclick="submitDream()" class="magnetic-btn w-full bg-white text-black py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all">
+                That's my dream
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <button onclick="closeDreamPopup()" class="text-zinc-600 text-xs mt-4 hover:text-zinc-400 transition-colors block w-full">
+                Skip
+            </button>
+        </div>
+
+        <!-- Congrats screen (hidden initially) -->
+        <div class="dream-congrats absolute w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-8 text-center hidden" id="dreamCongratsScreen">
+            <!-- Animated emoji -->
+            <div class="text-6xl mb-4 sparkle-icon" id="dreamEmoji">🔥</div>
+            <p class="text-zinc-500 text-xs tracking-[0.3em] uppercase mb-3">You said it.</p>
+            <h2 class="font-display text-2xl md:text-3xl font-bold mb-4 leading-tight" id="congratsHeadline">
+                A <span id="congratsScore">10</span>/10 dream.
+            </h2>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-8" id="congratsMessage">
+                Dreams that big don't fit in ordinary clothes. Wear the identity of a dreamer — gear built for people who refuse to settle.
+            </p>
+
+            <!-- Score badge -->
+            <div class="inline-flex items-center gap-2 bg-white/5 border border-zinc-800 rounded-full px-5 py-2 mb-8">
+                <span class="text-zinc-400 text-sm">Your dream score:</span>
+                <span class="font-display font-bold text-white text-lg" id="congratsBadge">10/10</span>
+                <span id="congratsBadgeEmoji">🔥</span>
+            </div>
+
+            <!-- CTA -->
+            <a href="#products" onclick="closeDreamPopup()" class="magnetic-btn w-full bg-white text-black py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all mb-3">
+                Wear the Identity
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <button onclick="closeDreamPopup()" class="text-zinc-600 text-xs hover:text-zinc-400 transition-colors w-full">
+                Maybe later
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal fixed inset-0 z-[60] flex items-center justify-center p-4" id="successModal">
+        <div class="absolute inset-0 bg-black/90" onclick="closeSuccessModal()"></div>
+        <div class="relative bg-zinc-900 border border-zinc-700 rounded-2xl p-8 max-w-md w-full text-center">
+            <!-- Default: plain success -->
+            <div id="successDefault">
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-10 h-10 text-green-400"></i>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Payment Successful!</h3>
+                <p class="text-zinc-400 mb-6">Welcome to the Timenon movement. Your confidence gear is on its way.</p>
+                <div class="bg-zinc-800 rounded-xl p-4 mb-6 text-left">
+                    <p class="text-sm text-zinc-500 mb-1">Order Reference</p>
+                    <p class="font-mono text-white text-sm" id="successReference">-</p>
+                </div>
+                <button onclick="closeSuccessModal()" class="magnetic-btn bg-white text-black px-8 py-3 rounded-full font-semibold w-full">
+                    Continue Shopping
+                </button>
+            </div>
+
+            <!-- Cashback earned version -->
+            <div id="successCashback" class="hidden">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-amber-500/20 flex items-center justify-center">
+                    <i data-lucide="gift" class="w-10 h-10 text-amber-400"></i>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-1">Payment Successful!</h3>
+                <p class="text-zinc-400 mb-5 text-sm">Your gear is on its way. And you just earned cashback!</p>
+
+                <!-- Cashback earned card -->
+                <div class="bg-gradient-to-br from-amber-500/10 to-amber-900/10 border border-amber-500/30 rounded-xl p-5 mb-4 text-left">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-amber-400 font-semibold text-sm flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            Cashback Earned
+                        </p>
+                        <span class="font-display text-2xl font-bold text-amber-400" id="cashbackEarnedAmount">NGN 0</span>
+                    </div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">This has been added to your Timenon wallet. Use it on any future order by contacting us with your email and order reference.</p>
+                </div>
+
+                <!-- Order info -->
+                <div class="bg-zinc-800 rounded-xl p-4 mb-4 text-left space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-zinc-500">Order Reference</span>
+                        <span class="font-mono text-white text-xs" id="successReferenceCashback">-</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-zinc-500">Order Total</span>
+                        <span class="text-white font-semibold" id="successOrderTotal">-</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-zinc-500">Wallet Balance</span>
+                        <span class="text-amber-400 font-semibold" id="successWalletBalance">-</span>
+                    </div>
+                </div>
+
+                <!-- Saving indicator -->
+                <div class="flex items-center justify-center gap-2 text-zinc-500 text-xs mb-5" id="savingIndicator">
+                    <svg class="w-3 h-3 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                    Saving your cashback...
+                </div>
+                <div class="hidden text-green-400 text-xs mb-5 flex items-center justify-center gap-1" id="savedIndicator">
+                    <i data-lucide="check" class="w-3 h-3"></i> Cashback recorded to your account
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <a href="cashback.html" class="magnetic-btn bg-white text-black px-8 py-3 rounded-full font-semibold w-full text-center flex items-center justify-center gap-2">
+                        <i data-lucide="gift" class="w-4 h-4"></i>
+                        View My Cashback Wallet
+                    </a>
+                    <button onclick="closeSuccessModal()" class="text-zinc-500 text-xs hover:text-white transition-colors py-2">
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ambassador Success Modal -->
+    <div class="success-modal fixed inset-0 z-[60] flex items-center justify-center p-6" id="ambassadorSuccessModal">
+        <div class="absolute inset-0 bg-black/90" onclick="closeAmbassadorModal()"></div>
+        <div class="relative bg-zinc-900 border border-zinc-700 rounded-2xl p-8 max-w-md w-full text-center">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
+                <i data-lucide="star" class="w-10 h-10 text-white"></i>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-2">Application Received!</h3>
+            <p class="text-zinc-400 mb-6">Thank you for applying to be a Timenon Ambassador. We'll review your application and send your unique referral code to your email within 48 hours.</p>
+            <div class="bg-zinc-800 rounded-xl p-4 mb-6 text-left space-y-2">
+                <div class="flex items-center gap-2 text-sm">
+                    <i data-lucide="mail" class="w-4 h-4 text-zinc-400"></i>
+                    <span class="text-zinc-400">Check your inbox for your referral code</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <i data-lucide="percent" class="w-4 h-4 text-zinc-400"></i>
+                    <span class="text-zinc-400">Earn 10% of every referred order</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <i data-lucide="zap" class="w-4 h-4 text-zinc-400"></i>
+                    <span class="text-zinc-400">No cap on earnings</span>
+                </div>
+            </div>
+            <button onclick="closeAmbassadorModal()" class="magnetic-btn bg-white text-black px-8 py-3 rounded-full font-semibold w-full">
+                Got It
+            </button>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="success-modal fixed inset-0 z-[60] flex items-center justify-center p-6" id="productModal">
+        <div class="absolute inset-0 bg-black/90" onclick="closeProductModal()"></div>
+        <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-lg w-full" id="productModalContent"></div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-zinc-950 border-l border-zinc-800 z-[55] flex flex-col" id="cartDrawer">
+        <!-- Header — always fixed at top -->
+        <div class="p-6 border-b border-zinc-800 flex justify-between items-center flex-shrink-0 bg-zinc-950">
+            <h2 class="font-display text-xl font-bold">Your Cart</h2>
+            <button onclick="toggleCart()" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Single scrollable area — items + order summary + form + button all scroll together -->
+        <div class="flex-1 overflow-y-auto cart-scroll-area" id="cartScrollArea">
+
+            <!-- Cart Items -->
+            <div class="p-6 pb-0" id="cartItems"></div>
+
+            <!-- Order Summary -->
+            <div class="px-6 pt-4 pb-2">
+                <div class="bg-zinc-900 rounded-2xl p-4 space-y-3">
+                    <div class="flex justify-between text-zinc-400 text-sm">
+                        <span>Subtotal</span><span id="cartSubtotal">NGN 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm" id="shippingLine">
+                        <span class="text-zinc-400">Shipping</span>
+                        <span id="shippingDisplay" class="text-zinc-500">Enter address below</span>
+                    </div>
+                    <div class="flex justify-between text-amber-400 text-sm hidden" id="discountLine">
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="gift" class="w-3 h-3"></i>
+                            10% Cashback on this order
+                        </span>
+                        <span id="discountAmount"></span>
+                    </div>
+                    <div class="flex justify-between font-bold pt-2 border-t border-zinc-800">
+                        <span>Total</span><span id="cartTotal">NGN 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Form -->
+            <div class="px-6 pt-4 pb-2 space-y-3" id="checkoutForm">
+                <p class="text-xs text-zinc-500 uppercase tracking-wider font-medium">Your Details</p>
+                <input type="text" id="customerName" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                <input type="email" id="customerEmail" placeholder="Email Address" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                <input type="tel" id="customerPhone" placeholder="Phone Number (e.g. +234...)" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+
+                <!-- Address -->
+                <div class="space-y-2 pt-1">
+                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-medium">Delivery Address</p>
+                    <input type="text" id="streetAddress" placeholder="Street Address" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                    <input type="text" id="city" placeholder="City" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                    <div class="flex gap-2">
+                        <input type="text" id="state" placeholder="State" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                        <input type="text" id="country" placeholder="Country" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm">
+                    </div>
+                </div>
+
+                <!-- Delivery Rate -->
+                <div class="space-y-2 pt-1" id="deliveryRateSection">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs text-zinc-500 uppercase tracking-wider font-medium">Delivery Rate</p>
+                        <button onclick="getDeliveryRate()" id="getRateBtn"
+                            class="text-xs bg-zinc-700 hover:bg-zinc-600 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+                            <i data-lucide="truck" class="w-3 h-3"></i>
+                            Get Rate
+                        </button>
+                    </div>
+
+                    <!-- Loading -->
+                    <div class="hidden items-center gap-2 text-zinc-400 text-xs py-2" id="rateLoading">
+                        <div class="delivery-spinner"></div>
+                        <span>Fetching live rates...</span>
+                    </div>
+
+                    <!-- Free delivery badge -->
+                    <div class="hidden items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3" id="freeDeliveryBadge">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-green-400 flex-shrink-0"></i>
+                        <p class="text-green-400 text-xs font-medium">Free delivery in Uyo! Your order ships at no cost. 🎉</p>
+                    </div>
+
+                    <!-- Courier options -->
+                    <div class="hidden space-y-2" id="courierList"></div>
+
+                    <!-- Rate error -->
+                    <div class="hidden items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2" id="rateError">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 flex-shrink-0"></i>
+                        <p class="text-red-400 text-xs" id="rateErrorMsg">Could not fetch rates. Please try again.</p>
+                    </div>
+                </div>
+
+                <!-- Referral Code -->
+                <div class="space-y-2 pt-1">
+                    <div class="flex items-center gap-2">
+                        <p class="text-xs text-zinc-500 uppercase tracking-wider font-medium">Referral Code</p>
+                        <span class="text-xs text-zinc-600">(optional)</span>
+                    </div>
+                    <div class="referral-input-wrap flex gap-2">
+                        <input type="text" id="referralCode"
+                            placeholder="e.g. TIMENON-XXXX"
+                            class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-white transition-colors text-sm uppercase tracking-widest"
+                            oninput="this.value=this.value.toUpperCase()"
+                            onkeydown="if(event.key==='Enter'){applyReferralCode();}">
+                        <button id="applyReferralBtn" onclick="applyReferralCode()" class="flex-shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-3 rounded-xl text-sm font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                    <!-- Checking badge -->
+                    <div class="referral-badge items-center gap-2 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2" id="referralChecking">
+                        <svg class="w-4 h-4 text-zinc-400 flex-shrink-0 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                        <p class="text-zinc-400 text-xs font-medium">Verifying code...</p>
+                    </div>
+                    <!-- Success badge -->
+                    <div class="referral-badge items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2" id="referralSuccess">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+                        <p class="text-amber-400 text-xs font-medium">Code applied! Referred by <span id="referralAmbassadorName" class="font-bold"></span>. You'll receive 10% cashback on this order.</p>
+                    </div>
+                    <!-- Error badge -->
+                    <div class="referral-badge items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2" id="referralError">
+                        <i data-lucide="x-circle" class="w-4 h-4 text-red-400 flex-shrink-0"></i>
+                        <p class="text-red-400 text-xs font-medium">Invalid referral code. Please check and try again.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pay Button — inside scroll so it's always reachable -->
+            <div class="px-6 pt-4 pb-10">
+                <button onclick="checkoutWithPaystack()" class="paystack-btn w-full text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 transition-all hover:scale-[1.02]">
+                    <span>Pay with Paystack</span>
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                </button>
+                <p class="text-center text-zinc-600 text-xs mt-3">Secure payment powered by Paystack</p>
+            </div>
+
+        </div><!-- end scroll area -->
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 px-6 py-6 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="font-display text-2xl font-bold tracking-tighter glitch-text" data-text="TIMENON">TIMENON</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#philosophy" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Philosophy</a>
+                <a href="#products" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Products</a>
+                <a href="#gallery" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Gallery</a>
+                <a href="#community" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Community</a>
+                <a href="#ambassador" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Ambassador</a>
+                <a href="#reviews" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Reviews</a>
+                <a href="#story" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Story</a>
+            </div>
+            <button onclick="toggleCart()" class="relative magnetic-btn bg-white text-black px-6 py-3 rounded-full text-sm font-semibold hover:bg-zinc-200 transition-colors flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                <span>Cart</span>
+                <span id="cartCount" class="absolute -top-2 -right-2 bg-zinc-900 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold border-2 border-white hidden">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-zinc-800 rounded-full blur-[128px] opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700 rounded-full blur-[128px] opacity-20 animate-pulse delay-1000"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+            <div class="reveal active">
+                <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-6 font-medium">Confidence-Driven Fashion</p>
+                <h1 class="font-display text-6xl md:text-8xl lg:text-9xl font-bold leading-none mb-8 hero-text tracking-tight">
+                    DIFFICULT<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-white">NOT IMPOSSIBLE</span>
+                </h1>
+                <p class="max-w-2xl mx-auto text-zinc-400 text-lg md:text-xl mb-12 leading-relaxed">
+                    Timenon is the brand for those with big dreams, who believe it's difficult not impossible to achieve it.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="#products" class="magnetic-btn bg-white text-black px-8 py-4 rounded-full text-base font-semibold hover:bg-zinc-200 transition-all flex items-center gap-2">
+                        Shop Collection <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#community" class="magnetic-btn border border-zinc-700 text-white px-8 py-4 rounded-full text-base font-semibold hover:border-white transition-all">
+                        Join Community
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+            <div class="w-6 h-10 border-2 border-zinc-600 rounded-full flex justify-center pt-2">
+                <div class="w-1 h-2 bg-white rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="border-y border-zinc-800 py-6 overflow-hidden bg-zinc-950">
+        <div class="marquee whitespace-nowrap flex gap-12 text-zinc-600 text-sm font-medium tracking-widest uppercase">
+            <span>Wear Confidence</span><span>•</span>
+            <span>Become Unstoppable</span><span>•</span>
+            <span>Difficult Not Impossible</span><span>•</span>
+            <span>Identity Over Trends</span><span>•</span>
+            <span>Community Driven</span><span>•</span>
+            <span>Free Shipping Nationwide</span><span>•</span>
+            <span>Wear Confidence</span><span>•</span>
+            <span>Become Unstoppable</span><span>•</span>
+            <span>Difficult Not Impossible</span><span>•</span>
+            <span>Identity Over Trends</span><span>•</span>
+            <span>Community Driven</span><span>•</span>
+            <span>Free Shipping Nationwide</span><span>•</span>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <section id="products" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- Header -->
+            <div class="text-center mb-6 reveal">
+                <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">The Collection</p>
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-4">Where Are You <span class="text-zinc-500">on the Journey?</span></h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto text-lg">Every Timenon piece belongs to a level. Find yours.</p>
+            </div>
+
+            <!-- Journey path indicator -->
+            <div class="flex items-center justify-center gap-0 mb-20 reveal">
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-zinc-800 border-2 border-zinc-600 flex items-center justify-center text-lg">🌱</div>
+                    <span class="text-zinc-500 text-xs mt-2 tracking-wider uppercase">Dreamer</span>
+                </div>
+                <div class="flex-1 max-w-[80px] h-px bg-gradient-to-r from-zinc-600 to-zinc-700 mx-2"></div>
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-zinc-800 border-2 border-zinc-500 flex items-center justify-center text-lg">⚡</div>
+                    <span class="text-zinc-500 text-xs mt-2 tracking-wider uppercase">Believer</span>
+                </div>
+                <div class="flex-1 max-w-[80px] h-px bg-gradient-to-r from-zinc-700 to-white/40 mx-2"></div>
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-white/10 border-2 border-white/60 flex items-center justify-center text-lg">🔥</div>
+                    <span class="text-zinc-300 text-xs mt-2 tracking-wider uppercase font-semibold">Achiever</span>
+                </div>
+            </div>
+
+            <!-- ── LEVEL 01: THE DREAMER ── -->
+            <div class="mb-32 reveal">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    <!-- Image -->
+                    <div class="product-card group order-1">
+                        <div class="aspect-[3/4] bg-zinc-900 rounded-3xl overflow-hidden relative">
+                            <img src="assets/images/Timenon3.jpg" alt="Aero1 Cap" class="product-image absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                            <!-- Level badge -->
+                            <div class="absolute top-5 left-5 flex items-center gap-2 bg-black/60 backdrop-blur-md border border-zinc-700 rounded-full px-4 py-2">
+                                <span class="text-sm">🌱</span>
+                                <span class="text-white text-xs font-semibold tracking-wider uppercase">Level 01</span>
+                            </div>
+                            <!-- Limited badge -->
+                            <div class="absolute top-5 right-5 bg-zinc-800 border border-zinc-600 text-white text-xs font-bold px-3 py-1 rounded-full">LIMITED</div>
+                            <!-- Color dots -->
+                            <div class="absolute bottom-5 left-5 flex gap-2">
+                                <div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div>
+                                <div class="w-6 h-6 rounded-full bg-zinc-500 border-2 border-zinc-400"></div>
+                            </div>
+                            <!-- Price on image -->
+                            <div class="absolute bottom-5 right-5 bg-black/70 backdrop-blur-md rounded-xl px-4 py-2">
+                                <span class="font-mono text-white font-bold">NGN 9,900</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="order-2 flex flex-col justify-center">
+                        <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 mb-6 w-fit">
+                            <span class="text-sm">🌱</span>
+                            <span class="text-zinc-400 text-xs tracking-[0.2em] uppercase font-medium">The Dreamer</span>
+                        </div>
+                        <h3 class="font-display text-4xl md:text-5xl font-bold mb-2">Aero1 Cap</h3>
+                        <p class="text-zinc-500 text-sm mb-6 tracking-wider uppercase">One Size &nbsp;·&nbsp; Black &amp; Grey</p>
+
+                        <p class="text-zinc-300 text-lg leading-relaxed mb-6">
+                            Every legend starts with a dream. Before the work, before the wins — there's a vision. The Aero1 Cap is for you: the one with a dream so vivid it keeps you up at night.
+                        </p>
+                        <p class="text-zinc-500 text-sm leading-relaxed mb-8">
+                            Wear it as a daily reminder that your dream is valid. That it's worth pursuing. That the journey begins the moment you decide to believe in what you see in your mind.
+                        </p>
+
+                        <!-- Traits -->
+                        <div class="space-y-3 mb-10">
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You have a dream that most people can't see yet
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You're at the beginning of something great
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You refuse to let the dream stay just a dream
+                            </div>
+                        </div>
+
+                        <button onclick="openProductModal('aero1')" class="magnetic-btn bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-zinc-200 transition-all inline-flex items-center gap-2 w-fit">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            I'm a Dreamer — NGN 9,900
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-4 mb-32 reveal">
+                <div class="flex-1 h-px bg-zinc-800"></div>
+                <div class="flex items-center gap-2 text-zinc-600 text-xs tracking-widest uppercase">
+                    <span>Level Up</span>
+                    <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1 h-px bg-zinc-800"></div>
+            </div>
+
+            <!-- ── LEVEL 02: THE BELIEVER ── -->
+            <div class="mb-32 reveal">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    <!-- Content -->
+                    <div class="flex flex-col justify-center order-2">
+                        <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-2 mb-6 w-fit">
+                            <span class="text-sm">⚡</span>
+                            <span class="text-zinc-400 text-xs tracking-[0.2em] uppercase font-medium">The Believer</span>
+                        </div>
+                        <h3 class="font-display text-4xl md:text-5xl font-bold mb-2">Timenon T1</h3>
+                        <p class="text-zinc-500 text-sm mb-6 tracking-wider uppercase">Sizes: L, XL &nbsp;·&nbsp; Black &amp; Grey</p>
+
+                        <p class="text-zinc-300 text-lg leading-relaxed mb-6">
+                            The dream is clear. The work has started. You're not just talking about it — you're building it, day by day, even when results aren't showing yet. The T1 is for you.
+                        </p>
+                        <p class="text-zinc-500 text-sm leading-relaxed mb-8">
+                            You've crossed the line from wishing to working. Some days are hard. Some days doubt creeps in. But you keep going because you believe — deeply — that it's difficult, not impossible.
+                        </p>
+
+                        <!-- Traits -->
+                        <div class="space-y-3 mb-10">
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You're actively working on your dream right now
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You believe in it even when others don't see it
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-zinc-500 flex-shrink-0"></div>
+                                You show up every day — in silence, with purpose
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <button onclick="openProductModal('t1')" class="magnetic-btn bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-zinc-200 transition-all inline-flex items-center gap-2">
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                                I'm a Believer — NGN 39,900
+                            </button>
+                            <span class="bg-white text-black text-xs font-bold px-3 py-1.5 rounded-full">NEW</span>
+                        </div>
+                    </div>
+
+                    <!-- Image -->
+                    <div class="product-card group order-1">
+                        <div class="aspect-[3/4] bg-zinc-900 rounded-3xl overflow-hidden relative">
+                            <img src="assets/images/T1Black.jpg" alt="Timenon T1" class="product-image absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                            <!-- Level badge -->
+                            <div class="absolute top-5 left-5 flex items-center gap-2 bg-black/60 backdrop-blur-md border border-zinc-700 rounded-full px-4 py-2">
+                                <span class="text-sm">⚡</span>
+                                <span class="text-white text-xs font-semibold tracking-wider uppercase">Level 02</span>
+                            </div>
+                            <!-- Color dots -->
+                            <div class="absolute bottom-5 left-5 flex gap-2">
+                                <div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div>
+                                <div class="w-6 h-6 rounded-full bg-zinc-500 border-2 border-zinc-400"></div>
+                            </div>
+                            <!-- Price on image -->
+                            <div class="absolute bottom-5 right-5 bg-black/70 backdrop-blur-md rounded-xl px-4 py-2">
+                                <span class="font-mono text-white font-bold">NGN 39,900</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-4 mb-32 reveal">
+                <div class="flex-1 h-px bg-gradient-to-r from-zinc-800 to-white/20"></div>
+                <div class="flex items-center gap-2 text-zinc-400 text-xs tracking-widest uppercase font-semibold">
+                    <span>The Summit</span>
+                    <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1 h-px bg-gradient-to-l from-zinc-800 to-white/20"></div>
+            </div>
+
+            <!-- ── LEVEL 03: THE ACHIEVER ── -->
+            <div class="mb-20 reveal">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    <!-- Image -->
+                    <div class="product-card group order-1 relative">
+                        <div class="aspect-[3/4] bg-zinc-900 rounded-3xl overflow-hidden relative">
+                            <img src="assets/images/proBlack.jpg" alt="Timenon T1 Pro" class="product-image absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                            <!-- Level badge -->
+                            <div class="absolute top-5 left-5 flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/30 rounded-full px-4 py-2">
+                                <span class="text-sm">🔥</span>
+                                <span class="text-white text-xs font-semibold tracking-wider uppercase">Level 03</span>
+                            </div>
+                            <!-- Inscription tag -->
+                            <div class="absolute top-5 right-5 bg-white text-black text-xs font-bold px-3 py-1 rounded-full">PINNACLE</div>
+                            <!-- Color dots -->
+                            <div class="absolute bottom-5 left-5 flex gap-2">
+                                <div class="w-6 h-6 rounded-full bg-black border-2 border-white"></div>
+                                <div class="w-6 h-6 rounded-full bg-zinc-500 border-2 border-zinc-400"></div>
+                            </div>
+                            <!-- Price on image -->
+                            <div class="absolute bottom-5 right-5 bg-black/70 backdrop-blur-md rounded-xl px-4 py-2">
+                                <span class="font-mono text-white font-bold">NGN 49,900</span>
+                            </div>
+                        </div>
+                        <!-- Inscription callout -->
+                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-max bg-zinc-900 border border-zinc-700 rounded-full px-5 py-2 flex items-center gap-2">
+                            <i data-lucide="pen-tool" class="w-3 h-3 text-zinc-400"></i>
+                            <span class="text-zinc-400 text-xs italic">"Difficult, Not Impossible"</span>
+                            <span class="text-zinc-600 text-xs">— inscribed at the back</span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="order-2 flex flex-col justify-center">
+                        <div class="inline-flex items-center gap-2 bg-white/5 border border-white/20 rounded-full px-4 py-2 mb-6 w-fit">
+                            <span class="text-sm">🔥</span>
+                            <span class="text-zinc-300 text-xs tracking-[0.2em] uppercase font-semibold">The Achiever</span>
+                        </div>
+                        <h3 class="font-display text-4xl md:text-5xl font-bold mb-2">Timenon T1 Pro</h3>
+                        <p class="text-zinc-500 text-sm mb-6 tracking-wider uppercase">Sizes: L, XL &nbsp;·&nbsp; Black &amp; Grey</p>
+
+                        <p class="text-zinc-300 text-lg leading-relaxed mb-6">
+                            You did it. What others said was impossible, you proved wrong. The T1 Pro is the pinnacle of the Timenon journey — worn by those who have turned their dream into reality.
+                        </p>
+                        <p class="text-zinc-500 text-sm leading-relaxed mb-4">
+                            Inscribed at the back: <span class="text-white italic font-medium">"Difficult, Not Impossible."</span> Not as a motivational quote — but as a statement of proof. You've lived it. Now wear it.
+                        </p>
+
+                        <!-- Highlight box -->
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8">
+                            <p class="text-zinc-300 text-sm font-semibold mb-1">What makes the T1 Pro different</p>
+                            <p class="text-zinc-500 text-sm leading-relaxed">Enhanced construction, customization options, and the signature back inscription — reserved exclusively for those who've earned the right to wear it.</p>
+                        </div>
+
+                        <!-- Traits -->
+                        <div class="space-y-3 mb-10">
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0"></div>
+                                You've achieved what you once only dreamed of
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0"></div>
+                                You are proof that it's difficult — not impossible
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-zinc-400">
+                                <div class="w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0"></div>
+                                You inspire others just by showing up
+                            </div>
+                        </div>
+
+                        <button onclick="openProductModal('t1pro')" class="pulse-ring magnetic-btn bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-zinc-200 transition-all inline-flex items-center gap-2 w-fit">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            I'm an Achiever — NGN 49,900
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Shipping Banner -->
+            <div class="mt-24 reveal">
+                <div class="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 text-center">
+                    <div class="flex items-center justify-center gap-3 mb-3">
+                        <i data-lucide="truck" class="w-6 h-6 text-green-400"></i>
+                        <h3 class="font-display text-2xl font-bold">Free Shipping Nationwide</h3>
+                    </div>
+                    <p class="text-zinc-400">All orders ship free within Nigeria. No minimum purchase required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- REVIEWS SECTION                           -->
+    <!-- ══════════════════════════════════════════ -->
+    <section id="reviews" class="py-24 overflow-hidden bg-black">
+        <div class="max-w-7xl mx-auto px-6 mb-12 reveal">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">What They're Saying</p>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold">Real <span class="text-zinc-500">Reviews</span></h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-center">
+                        <p class="font-display text-4xl font-bold">4.9</p>
+                        <div class="stars text-lg">★★★★★</div>
+                        <p class="text-zinc-500 text-xs mt-1">Average Rating</p>
+                    </div>
+                    <div class="w-px h-12 bg-zinc-800"></div>
+                    <div class="text-center">
+                        <p class="font-display text-4xl font-bold">100+</p>
+                        <p class="text-zinc-500 text-xs mt-1">Verified Orders</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrolling review track -->
+        <div class="relative">
+            <!-- Fade edges -->
+            <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+
+            <div class="overflow-hidden py-4">
+                <div class="review-track">
+                    <!-- Review 1 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"The T1 hoodie is easily the most comfortable thing I own. The quality is insane for the price. Already got two of my friends to cop one."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">AW</div>
+                            <div>
+                                <p class="font-semibold text-sm">Arata W.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Black, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"I wasn't expecting this level of quality from a Nigerian brand honestly. The T1 Pro fits perfectly and the embroidery detail is clean. Very impressed."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">DS</div>
+                            <div>
+                                <p class="font-semibold text-sm">Defisavvy</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Grey, XL</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Got the Aero1 cap and it goes with literally everything. Clean, minimal, no unnecessary logos. Exactly what I was looking for."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">PS</div>
+                            <div>
+                                <p class="font-semibold text-sm">Perez S.</p>
+                                <p class="text-zinc-500 text-xs">Aero1 Cap — Black</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 4 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Free shipping was a pleasant surprise. Got my order in 3 days and the packaging was so clean. Timenon clearly cares about the experience end to end."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">CC</div>
+                            <div>
+                                <p class="font-semibold text-sm">Chidinma C.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Grey, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 5 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Honestly changed how I feel walking into a room. There's something about wearing Timenon that just hits different. Confidence is real."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">KO</div>
+                            <div>
+                                <p class="font-semibold text-sm">Kolade O.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Black, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 6 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"The hoodie is thick without being heavy. Perfect for Lagos nights. Got compliments the first day I wore it out. Will definitely be ordering again."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">TA</div>
+                            <div>
+                                <p class="font-semibold text-sm">Taiwo A.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Black, XL</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 7 -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Ordered the grey T1 Pro and it looks even better in person than in the photos. The stitching is immaculate. You can tell this was made with care."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">EM</div>
+                            <div>
+                                <p class="font-semibold text-sm">Emeka M.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Grey, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate set for seamless loop -->
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"The T1 hoodie is easily the most comfortable thing I own. The quality is insane for the price. Already got two of my friends to cop one."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">AW</div>
+                            <div>
+                                <p class="font-semibold text-sm">Arata W.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Black, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"I wasn't expecting this level of quality from a Nigerian brand honestly. The T1 Pro fits perfectly and the embroidery detail is clean. Very impressed."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">DS</div>
+                            <div>
+                                <p class="font-semibold text-sm">Defisavvy</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Grey, XL</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Got the Aero1 cap and it goes with literally everything. Clean, minimal, no unnecessary logos. Exactly what I was looking for."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">PS</div>
+                            <div>
+                                <p class="font-semibold text-sm">Perez S.</p>
+                                <p class="text-zinc-500 text-xs">Aero1 Cap — Black</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Free shipping was a pleasant surprise. Got my order in 3 days and the packaging was so clean. Timenon clearly cares about the experience end to end."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">CC</div>
+                            <div>
+                                <p class="font-semibold text-sm">Chidinma C.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Grey, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Honestly changed how I feel walking into a room. There's something about wearing Timenon that just hits different. Confidence is real."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">KO</div>
+                            <div>
+                                <p class="font-semibold text-sm">Kolade O.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Black, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"The hoodie is thick without being heavy. Perfect for Lagos nights. Got compliments the first day I wore it out. Will definitely be ordering again."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">TA</div>
+                            <div>
+                                <p class="font-semibold text-sm">Taiwo A.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 — Black, XL</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card flex-shrink-0 w-80 bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+                        <div class="stars text-sm mb-3">★★★★★</div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-4">"Ordered the grey T1 Pro and it looks even better in person than in the photos. The stitching is immaculate. You can tell this was made with care."</p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-sm">EM</div>
+                            <div>
+                                <p class="font-semibold text-sm">Emeka M.</p>
+                                <p class="text-zinc-500 text-xs">Timenon T1 Pro — Grey, L</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section id="philosophy" class="py-32 px-6 bg-zinc-950 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20 reveal">
+                <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">Brand Philosophy</p>
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-6">The Meaning of <span class="text-zinc-500">Timenon</span></h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto text-lg">Each letter represents a step in the journey to success.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-16">
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">T</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Trauma</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:100ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">I</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Intention</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:200ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">M</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Mastery</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:300ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">E</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Excellence</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:400ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">N</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Neophytism</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:500ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">O</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Optimism</div></div>
+                <div class="letter-card bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl text-center group cursor-pointer reveal" style="transition-delay:600ms"><div class="font-display text-4xl font-bold mb-2 group-hover:text-zinc-300 transition-colors">N</div><div class="text-xs text-zinc-500 uppercase tracking-wider">Narcissism</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">Community Gallery</p>
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-6">The <span class="text-zinc-500">Timenonians</span></h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto text-lg">Real people, real confidence. See how our community wears their Timenon gear.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal"><img src="assets/images/X1.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@arata_watoshi</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 — Black, L</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:100ms"><img src="assets/images/X2.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@defisavvy_</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 Pro — Grey, XL</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:200ms"><img src="assets/images/X3.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@username</p><p class="text-zinc-400 text-xs mt-1">Aero1 Cap — Black</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:300ms"><img src="assets/images/X4.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@perez.sunshine2</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 — Grey, L</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal"><img src="assets/images/X5.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@thecreativechidinma</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 Pro — Black, XL</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:100ms"><img src="assets/images/X6.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@thecreativechidinma</p><p class="text-zinc-400 text-xs mt-1">Aero1 Cap — Grey</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:200ms"><img src="assets/images/X7.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@perez.sunshine2</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 — Black, XL</p></div></div>
+                <div class="gallery-item relative aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-900 reveal" style="transition-delay:300ms"><img src="assets/images/X8.jpg" alt="Customer" class="w-full h-full object-cover"><div class="gallery-overlay absolute inset-0 bg-black/60 flex flex-col justify-end p-6"><p class="text-white font-semibold text-sm">@arata_watoshi</p><p class="text-zinc-400 text-xs mt-1">Timenon T1 Pro — Grey, L</p></div></div>
+            </div>
+            <div class="mt-16 text-center reveal">
+                <p class="text-zinc-400 mb-4">Want to be featured in our gallery?</p>
+                <a href="mailto:timenontheconfidencebrand@gmail.com?subject=Gallery%20Submission%20-%20Timenon&body=Hi%20Timenon%20Team%2C%0A%0AI'd%20like%20to%20submit%20my%20photo%20for%20the%20community%20gallery.%0A%0AInstagram%20%2F%20Twitter%20Handle%3A%20%0AProduct%20Worn%3A%20%0ALocation%3A%20%0A%0AAttached%20photos%3A%0A%0AThank%20you!" class="magnetic-btn border border-zinc-700 text-white px-8 py-4 rounded-full text-base font-semibold hover:border-white transition-all inline-flex items-center gap-2">
+                    <i data-lucide="camera" class="w-5 h-5"></i> Submit Your Photo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community -->
+    <section id="community" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">The Community</p>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Become a <span class="text-zinc-500">Timenonian</span></h2>
+                    <p class="text-zinc-400 text-lg mb-8 leading-relaxed">Customers become part of a private ecosystem. Members are referred to as Timenonians—but having the mindset makes you a Timenon.</p>
+                    <a href="https://linktr.ee/timenon" target="_blank" rel="noopener noreferrer" class="magnetic-btn bg-white text-black px-8 py-4 rounded-full text-base font-semibold hover:bg-zinc-200 transition-all inline-flex items-center gap-2">
+                        Join Community <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="reveal relative">
+                    <div class="aspect-square bg-zinc-900 rounded-2xl overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-zinc-800 to-black"></div>
+                        <div class="absolute inset-0 flex items-center justify-center p-12">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-zinc-800 text-center"><div class="text-3xl font-bold font-display mb-1">10K+</div><div class="text-zinc-500 text-xs uppercase tracking-wider">Community</div></div>
+                                <div class="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-zinc-800 text-center"><div class="text-3xl font-bold font-display mb-1">50+</div><div class="text-zinc-500 text-xs uppercase tracking-wider">Countries</div></div>
+                                <div class="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-zinc-800 text-center"><div class="text-3xl font-bold font-display mb-1">100%</div><div class="text-zinc-500 text-xs uppercase tracking-wider">Growth</div></div>
+                                <div class="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-zinc-800 text-center"><div class="text-3xl font-bold font-display mb-1">24/7</div><div class="text-zinc-500 text-xs uppercase tracking-wider">Support</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- AMBASSADOR SECTION                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <section id="ambassador" class="py-32 px-6 bg-zinc-950 relative overflow-hidden">
+        <!-- Ambient glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.02] rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-20 reveal">
+                <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-4">Timenon Ambassador Program</p>
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-6">
+                    Wear It.<br>
+                    <span class="text-zinc-500">Share It. Get Paid.</span>
+                </h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed">
+                    Every time someone uses your unique referral code to buy from Timenon, you earn <span class="text-white font-semibold">10% of their order value</span>—paid directly to you. No cap. No limits.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+
+                <!-- Left: How it works + perks -->
+                <div class="space-y-8 reveal">
+                    <!-- How it works -->
+                    <div>
+                        <h3 class="font-display text-2xl font-bold mb-6">How It Works</h3>
+                        <div class="space-y-5">
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <span class="font-display font-bold text-sm text-zinc-300">01</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold mb-1">Apply Below</p>
+                                    <p class="text-zinc-500 text-sm leading-relaxed">Fill out the ambassador form with your details and social media handle.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <span class="font-display font-bold text-sm text-zinc-300">02</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold mb-1">Receive Your Unique Code</p>
+                                    <p class="text-zinc-500 text-sm leading-relaxed">We'll email you a personal referral code (e.g. TIMENON-YOURNAME) within 48 hours.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <span class="font-display font-bold text-sm text-zinc-300">03</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold mb-1">Share & Earn</p>
+                                    <p class="text-zinc-500 text-sm leading-relaxed">Every purchase made with your code puts 10% of that order value directly in your pocket.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-10 h-10 rounded-xl bg-white/5 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <span class="font-display font-bold text-sm text-zinc-300">04</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold mb-1">Get Paid</p>
+                                    <p class="text-zinc-500 text-sm leading-relaxed">Earnings are tracked and paid out to you monthly. No minimums, no nonsense.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Perks grid -->
+                    <div>
+                        <h3 class="font-display text-xl font-bold mb-4">What You Get</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="perk-pill rounded-xl p-4 flex items-start gap-3">
+                                <i data-lucide="percent" class="w-5 h-5 text-white flex-shrink-0 mt-0.5"></i>
+                                <div>
+                                    <p class="font-semibold text-sm">10% Per Referral</p>
+                                    <p class="text-zinc-500 text-xs mt-0.5">Of every referred order</p>
+                                </div>
+                            </div>
+                            <div class="perk-pill rounded-xl p-4 flex items-start gap-3">
+                                <i data-lucide="infinity" class="w-5 h-5 text-white flex-shrink-0 mt-0.5"></i>
+                                <div>
+                                    <p class="font-semibold text-sm">No Earnings Cap</p>
+                                    <p class="text-zinc-500 text-xs mt-0.5">Refer as many as you want</p>
+                                </div>
+                            </div>
+                            <div class="perk-pill rounded-xl p-4 flex items-start gap-3">
+                                <i data-lucide="users" class="w-5 h-5 text-white flex-shrink-0 mt-0.5"></i>
+                                <div>
+                                    <p class="font-semibold text-sm">Community Status</p>
+                                    <p class="text-zinc-500 text-xs mt-0.5">Official Timenon Ambassador</p>
+                                </div>
+                            </div>
+                            <div class="perk-pill rounded-xl p-4 flex items-start gap-3">
+                                <i data-lucide="tag" class="w-5 h-5 text-white flex-shrink-0 mt-0.5"></i>
+                                <div>
+                                    <p class="font-semibold text-sm">Early Access</p>
+                                    <p class="text-zinc-500 text-xs mt-0.5">New drops before anyone else</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cashback note -->
+                    <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="gift" class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                            <div>
+                                <p class="font-semibold text-amber-400 text-sm mb-1">Shoppers get 10% Cashback Too</p>
+                                <p class="text-zinc-500 text-sm leading-relaxed">When a customer uses a valid ambassador code at checkout, they earn 10% cashback credit redeemable on their next Timenon order—making your code even more attractive to share.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Application Form -->
+                <div class="reveal" style="transition-delay:150ms">
+                    <div class="ambassador-card rounded-2xl p-8">
+                        <div class="mb-6">
+                            <h3 class="font-display text-2xl font-bold mb-2">Apply to Be an Ambassador</h3>
+                            <p class="text-zinc-500 text-sm">We review every application personally. Expect a response within 48 hours.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-2">Full Name *</label>
+                                <input type="text" id="ambName" placeholder="Your full name" class="amb-form-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-2">Email Address *</label>
+                                <input type="email" id="ambEmail" placeholder="your@email.com" class="amb-form-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-2">Social Media Handle *</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">@</span>
+                                    <input type="text" id="ambHandle" placeholder="yourhandle" class="amb-form-input" style="padding-left:2rem;">
+                                </div>
+                                <p class="text-zinc-600 text-xs mt-1">Instagram, Twitter/X, TikTok — whichever is your main platform</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-2">Platform *</label>
+                                <select id="ambPlatform" class="amb-form-input" style="appearance:none; cursor:pointer;">
+                                    <option value="" disabled selected style="color:#52525b;">Select your main platform</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="twitter">Twitter / X</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-2">Tell Us About Yourself *</label>
+                                <textarea id="ambBio" placeholder="Why do you want to be a Timenon Ambassador? Tell us about your audience, your style, and how you embody the Timenon mindset..." class="amb-form-input"></textarea>
+                            </div>
+
+                            <!-- Agreement -->
+                            <div class="bg-zinc-900 rounded-xl p-4 text-xs text-zinc-500 leading-relaxed border border-zinc-800">
+                                By submitting this form, you agree that Timenon will review your application and contact you at the email provided. Your unique referral code will be emailed to you upon approval. Referral earnings (10% per referred order) are paid monthly.
+                            </div>
+
+                            <button onclick="submitAmbassadorForm()" class="pulse-ring w-full bg-white text-black py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-zinc-100 transition-colors mt-2">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                Submit Application
+                            </button>
+                        </div>
+
+                        <!-- Already an ambassador -->
+                        <div class="mt-6 pt-6 border-t border-zinc-800 text-center">
+                            <p class="text-zinc-600 text-sm mb-3">Already an ambassador?</p>
+                            <a href="dashboard.html" class="magnetic-btn inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white px-6 py-3 rounded-full text-sm font-semibold transition-all">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                                View My Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story -->
+    <section id="story" class="py-32 px-6 bg-zinc-950">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <p class="text-zinc-500 text-sm tracking-[0.3em] uppercase mb-6">Our Story</p>
+            <h2 class="font-display text-4xl md:text-6xl font-bold mb-8">From Trauma to <span class="text-zinc-500">Transformation</span></h2>
+            <p class="text-zinc-400 text-lg leading-relaxed max-w-2xl mx-auto">
+                Timenon was inspired by the founder's experience of bullying, isolation, and low self-worth during secondary school. Starting Timenon in college became a turning point—a tool for self-expression, confidence, and social reintegration.
+            </p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-32 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-800/20 via-black to-black"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
+            <h2 class="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                This is not just<br>what you wear.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-white">This is who you are.</span>
+            </h2>
+            <a href="#products" class="magnetic-btn bg-white text-black px-10 py-5 rounded-full text-lg font-semibold hover:bg-zinc-200 transition-all inline-flex items-center gap-2 mt-8">
+                Shop Now <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-16 px-6 bg-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-2">
+                    <h3 class="font-display text-3xl font-bold mb-4 glitch-text" data-text="TIMENON">TIMENON</h3>
+                    <p class="text-zinc-500 max-w-sm mb-6">Premium confidence-driven fashion brand. Building confidence through community, activities, and outfits.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center hover:bg-zinc-800 transition-colors"><i data-lucide="send" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-zinc-300">Collection</h4>
+                    <ul class="space-y-3 text-zinc-500 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Timenon T1 — NGN 39,900</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Timenon T1 Pro — NGN 49,900</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Aero1 Cap — NGN 9,900</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-zinc-300">Support</h4>
+                    <ul class="space-y-3 text-zinc-500 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Shipping (Free)</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Returns</a></li>
+                        <li><a href="#ambassador" class="hover:text-white transition-colors">Ambassador Program</a></li>
+                        <li><a href="cashback.html" class="hover:text-white transition-colors">My Cashback Wallet</a></li>
+                        <li><a href="dashboard.html" class="hover:text-white transition-colors">Ambassador Dashboard</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-zinc-600 text-sm">2024 Timenon. All rights reserved.</p>
+                <div class="flex gap-6 text-zinc-600 text-sm">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // ════════════════════════════════════════
+        // CONFIG
+        // ════════════════════════════════════════
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_dddd0bb5c51763facd994b693d6f59066dc32321';
+        const CASHBACK_PERCENT = 0.10;
+        // Paste your Google Apps Script Web App URL here after deploying it
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ071MlGnKPxDHEN14hDrt-zZA6_R9YICE9ou5OtnOzH3Cs4LPx0avK3Gr0uIePj3dAA/exec';
+
+        // ---- GOOGLE SHEETS CONFIG ----
+        // Step 1: Set your Sheet ID here (copy from your sheet's URL)
+        // Step 2: Make sure your sheet is published (see setup guide in the file below)
+        const SHEET_ID   = '1JySdDWNHp9Ja6S_00EwVU8N1IlvGpf24CQTpbo8wmMw';
+        const SHEET_NAME = 'Codes'; // must match your sheet tab name exactly
+        const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+        // In-memory cache so we don't fetch on every keypress
+        let referralCodesCache = null;  // null = not loaded yet
+        let cacheTimestamp = 0;
+        const CACHE_TTL_MS = 5 * 60 * 1000; // refresh cache every 5 minutes
+
+        // Parses the CSV returned by Google Sheets
+        // Expected columns: A=Code, B=Ambassador Name, C=Status (ACTIVE/INACTIVE)
+        function parseCodesCSV(csv) {
+            const lines = csv.trim().split('\n').slice(1); // skip header row
+            const map = {};
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                let cols;
+                if (line.includes('"')) {
+                    // Quoted: "TIMENON-TIMI","ENOBONG ETIM","ACTIVE"
+                    cols = line.match(/"([^"]*)"/g);
+                    if (cols) cols = cols.map(c => c.replace(/"/g, '').trim());
+                } else {
+                    // Plain: TIMENON-TIMI,ENOBONG ETIM,ACTIVE
+                    cols = line.split(',').map(c => c.trim());
+                }
+                if (!cols || cols.length < 2) continue;
+                const code   = cols[0].toUpperCase();
+                const name   = cols[1];
+                const status = (cols[2] || 'ACTIVE').toUpperCase();
+                console.log('[Timenon] Row:', code, '|', name, '|', status);
+                if (code && status === 'ACTIVE') map[code] = name;
+            }
+            return map;
+        }
+
+        async function fetchReferralCodes() {
+            const now = Date.now();
+            if (referralCodesCache && (now - cacheTimestamp) < CACHE_TTL_MS) {
+                return referralCodesCache;
+            }
+            try {
+                // Add cache-busting and use cors mode — Google Sheets published CSV supports this
+                const url = SHEET_CSV_URL + '&cachebust=' + now;
+                const res = await fetch(url, { method: 'GET', cache: 'no-store' });
+                const csv = await res.text();
+                console.log('[Timenon] Raw CSV:', csv);
+                referralCodesCache = parseCodesCSV(csv);
+                console.log('[Timenon] Parsed codes:', referralCodesCache);
+                cacheTimestamp = now;
+                return referralCodesCache;
+            } catch (err) {
+                console.warn('[Timenon] Could not fetch referral codes:', err);
+                return referralCodesCache || {};
+            }
+        }
+
+        // ════════════════════════════════════════
+        // PRODUCTS
+        // ════════════════════════════════════════
+        const products = {
+            t1: {
+                id: 't1', name: 'Timenon T1', description: 'Minimalist Hoodie', priceNGN: 39900,
+                image: 'assets/images/T1Black.jpg', sizes: ['L', 'XL'],
+                colors: [
+                    { name: 'Black', hex: '#000000', border: '#27272a', image: 'assets/images/T1Black.jpg' },
+                    { name: 'Grey',  hex: '#52525b', border: '#71717a', image: 'assets/images/T1Grey.jpg' }
+                ]
+            },
+            t1pro: {
+                id: 't1pro', name: 'Timenon T1 Pro', description: 'Enhanced Hoodie with Customization', priceNGN: 49900,
+                image: 'assets/images/proBlack.jpg', sizes: ['L', 'XL'],
+                colors: [
+                    { name: 'Black', hex: '#000000', border: '#27272a', image: 'assets/images/proBlack.jpg' },
+                    { name: 'Grey',  hex: '#52525b', border: '#71717a', image: 'assets/images/proGrey.jpg' }
+                ]
+            },
+            aero1: {
+                id: 'aero1', name: 'Aero1 Cap', description: 'Functional Cap', priceNGN: 9900,
+                image: 'assets/images/Timenon3.jpg', sizes: ['One Size'],
+                colors: [
+                    { name: 'Black', hex: '#000000', border: '#27272a', image: 'assets/images/Timenon3.jpg' },
+                    { name: 'Grey',  hex: '#71717a', border: '#a1a1aa', image: 'assets/images/Timenon3Grey.jpg' }
+                ]
+            }
+        };
+
+        let selectedOptions = { color: null, size: null };
+
+        // ════════════════════════════════════════
+        // REFERRAL CODE STATE
+        // ════════════════════════════════════════
+        let appliedReferralCode = null;
+        let cashbackApplied = false;
+
+        async function applyReferralCode() {
+            const input  = document.getElementById('referralCode');
+            const code   = input.value.trim().toUpperCase();
+            const btn    = document.getElementById('applyReferralBtn');
+
+            // Reset badges
+            document.getElementById('referralSuccess').classList.remove('show');
+            document.getElementById('referralError').classList.remove('show');
+            document.getElementById('referralChecking').classList.add('show');
+
+            if (!code) {
+                document.getElementById('referralChecking').classList.remove('show');
+                return;
+            }
+
+            // Disable button while checking
+            btn.disabled = true;
+            btn.textContent = 'Checking...';
+
+            const codes = await fetchReferralCodes();
+
+            btn.disabled = false;
+            btn.textContent = 'Apply';
+            document.getElementById('referralChecking').classList.remove('show');
+
+            if (codes[code]) {
+                appliedReferralCode = code;
+                cashbackApplied = true;
+                document.getElementById('referralAmbassadorName').textContent = codes[code];
+                document.getElementById('referralSuccess').classList.add('show');
+                lucide.createIcons();
+                updateCartUI();
+            } else {
+                appliedReferralCode = null;
+                cashbackApplied = false;
+                document.getElementById('referralError').classList.add('show');
+                lucide.createIcons();
+                updateCartUI();
+            }
+        }
+
+        // ════════════════════════════════════════
+        // PRODUCT MODAL
+        // ════════════════════════════════════════
+        function openProductModal(productId) {
+            const product = products[productId];
+            selectedOptions = { color: product.colors[0].name, size: product.sizes[0] };
+
+            // Meta Pixel: ViewContent
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'ViewContent', {
+                    content_ids:  [productId],
+                    content_name: product.name,
+                    content_type: 'product',
+                    value:        product.priceNGN,
+                    currency:     'NGN'
+                });
+            }
+
+            const mc = document.getElementById('productModalContent');
+            mc.innerHTML = `
+                <button onclick="closeProductModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-20 h-20 bg-zinc-800 rounded-xl overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-display text-2xl font-bold">${product.name}</h3>
+                        <p class="text-zinc-400">${product.description}</p>
+                        <p class="text-xl font-mono mt-1">NGN ${product.priceNGN.toLocaleString()}</p>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <p class="text-sm text-zinc-400 mb-3">Select Color: <span class="text-white font-medium" id="selectedColorName">${selectedOptions.color}</span></p>
+                    <div class="flex gap-3">
+                        ${product.colors.map(c => `
+                            <button onclick="selectColor('${c.name}','${productId}')" class="color-option w-12 h-12 rounded-full border-2" style="background-color:${c.hex};border-color:${selectedOptions.color===c.name?'#ffffff':c.border}" data-color="${c.name}"></button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <p class="text-sm text-zinc-400 mb-3">Select Size: <span class="text-white font-medium" id="selectedSizeName">${selectedOptions.size}</span></p>
+                    <div class="flex gap-3">
+                        ${product.sizes.map(s => `
+                            <button onclick="selectSize('${s}')" class="size-option w-14 h-14 rounded-xl border border-zinc-700 font-bold ${selectedOptions.size===s?'selected':'text-zinc-400 hover:text-white'}" data-size="${s}">${s}</button>
+                        `).join('')}
+                    </div>
+                </div>
+                <button onclick="addToCartFromModal('${productId}')" class="w-full bg-white text-black py-4 rounded-full font-semibold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    Add to Cart — NGN ${product.priceNGN.toLocaleString()}
+                </button>`;
+            document.getElementById('productModal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+
+        function selectColor(colorName, productId) {
+            selectedOptions.color = colorName;
+            document.getElementById('selectedColorName').textContent = colorName;
+            document.querySelectorAll('.color-option').forEach(btn => {
+                const c = products[productId].colors.find(x => x.name === btn.dataset.color);
+                btn.style.borderColor = btn.dataset.color === colorName ? '#ffffff' : c.border;
+            });
+        }
+
+        function selectSize(sizeName) {
+            selectedOptions.size = sizeName;
+            document.getElementById('selectedSizeName').textContent = sizeName;
+            document.querySelectorAll('.size-option').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.size === sizeName);
+                btn.classList.toggle('text-zinc-400', btn.dataset.size !== sizeName);
+            });
+        }
+
+        function addToCartFromModal(productId) {
+            const product = products[productId];
+            const cartId   = `${productId}_${selectedOptions.color}_${selectedOptions.size}`;
+            const cartName = `${product.name} (${selectedOptions.color}, ${selectedOptions.size})`;
+            addToCart(cartId, cartName, product.priceNGN, product.description);
+            closeProductModal();
+        }
+
+        // ════════════════════════════════════════
+        // CART
+        // ════════════════════════════════════════
+        let cart = JSON.parse(localStorage.getItem('timenonCart')) || [];
+
+        function saveCart() { localStorage.setItem('timenonCart', JSON.stringify(cart)); updateCartUI(); }
+
+        function addToCart(id, name, priceNGN, description) {
+            const existing = cart.find(i => i.id === id);
+            if (existing) existing.quantity += 1;
+            else cart.push({ id, name, priceNGN, description, quantity: 1 });
+            saveCart();
+
+            // Meta Pixel: AddToCart
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'AddToCart', {
+                    content_ids:  [id],
+                    content_name: name,
+                    content_type: 'product',
+                    value:        priceNGN,
+                    currency:     'NGN'
+                });
+            }
+
+            toggleCart();
+        }
+
+        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); saveCart(); }
+
+        function updateQuantity(id, change) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.quantity += change;
+            if (item.quantity <= 0) removeFromCart(id); else saveCart();
+        }
+
+        function formatNGN(amount) {
+            return 'NGN ' + amount.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateCartUI() {
+            const container  = document.getElementById('cartItems');
+            const countEl    = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl    = document.getElementById('cartTotal');
+            const discLine   = document.getElementById('discountLine');
+            const discAmt    = document.getElementById('discountAmount');
+
+            const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
+            countEl.textContent = totalItems;
+            countEl.classList.toggle('hidden', totalItems === 0);
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 text-zinc-700 mx-auto mb-4"></i>
+                        <p class="text-zinc-500">Your cart is empty</p>
+                        <p class="text-zinc-600 text-sm mt-2">Add some confidence gear</p>
+                    </div>`;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="flex gap-4 mb-6 pb-6 border-b border-zinc-800">
+                        <div class="w-20 h-20 bg-zinc-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <span class="font-display font-bold text-sm text-center px-2">${item.name.split(' ')[0]}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold mb-1 truncate">${item.name}</h4>
+                            <p class="text-zinc-500 text-sm mb-3">${item.description}</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3 bg-zinc-900 rounded-lg p-1">
+                                    <button onclick="updateQuantity('${item.id}',-1)" class="quantity-btn w-8 h-8 rounded-md flex items-center justify-center text-zinc-400 hover:text-white">
+                                        <i data-lucide="minus" class="w-4 h-4"></i>
+                                    </button>
+                                    <span class="w-8 text-center font-medium">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.id}',1)" class="quantity-btn w-8 h-8 rounded-md flex items-center justify-center text-zinc-400 hover:text-white">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <span class="font-mono text-zinc-400 ml-3">${formatNGN(item.priceNGN * item.quantity)}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart('${item.id}')" class="text-zinc-600 hover:text-red-400 transition-colors self-start flex-shrink-0">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>`).join('');
+            }
+
+            const subtotal  = cart.reduce((s, i) => s + (i.priceNGN * i.quantity), 0);
+            const shipFee   = (typeof deliveryFee !== 'undefined') ? deliveryFee : 0;
+            const grandTotal = subtotal + shipFee;
+
+            subtotalEl.textContent = formatNGN(subtotal);
+            totalEl.textContent    = formatNGN(grandTotal);
+
+            // Show cashback indicator
+            if (cashbackApplied) {
+                discLine.classList.remove('hidden');
+                const cashbackAmt = Math.round(subtotal * CASHBACK_PERCENT);
+                discAmt.textContent = formatNGN(cashbackAmt) + ' earned after purchase';
+            } else {
+                discLine.classList.add('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        function toggleCart() {
+            const drawer  = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('cartOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+
+            // Meta Pixel: InitiateCheckout when cart is opened with items
+            if (drawer.classList.contains('open') && cart.length > 0 && typeof fbq !== 'undefined') {
+                fbq('track', 'InitiateCheckout', {
+                    value:     cart.reduce((s, i) => s + (i.priceNGN * i.quantity), 0),
+                    currency:  'NGN',
+                    num_items: cart.reduce((s, i) => s + i.quantity, 0)
+                });
+            }
+        }
+
+        // ════════════════════════════════════════
+        // PAYSTACK CHECKOUT
+        // ════════════════════════════════════════
+        // ════════════════════════════════════════
+        // SHIPBUBBLE DELIVERY RATES
+        // ════════════════════════════════════════
+        const SHIPBUBBLE_KEY = 'sb_prod_90b8d67fc0c70382a6f5b63de7dcf9b1497a30118f7e930085086ebc80572fa2';
+        const SHIPBUBBLE_URL = '/.netlify/functions/shipbubble'; // proxied via Netlify function
+
+        const SENDER = {
+            name:    'Timenon',
+            email:   'timenontheconfidencebrand@gmail.com',
+            phone:   '09014067515',
+            address: '48 Itiam Street',
+            city:    'Uyo',
+            state:   'Akwa Ibom',
+            country: 'NG'
+        };
+
+        // Weight per product in grams
+        const PRODUCT_WEIGHTS = {
+            't1':    400,
+            't1pro': 400,
+            'aero1': 90
+        };
+
+        const UYO_KEYWORDS = ['uyo', 'akwa ibom', 'akwaibom'];
+
+        let selectedCourier    = null;  // { name, price, courier_id }
+        let deliveryFee        = 0;
+        let isFreeDelivery     = false;
+
+        function isUyoDelivery(city, state) {
+            const combined = (city + ' ' + state).toLowerCase();
+            return UYO_KEYWORDS.some(k => combined.includes(k));
+        }
+
+        function getTotalWeightGrams() {
+            return cart.reduce((total, item) => {
+                const productId = item.id.split('_')[0]; // extract base product id
+                const weight    = PRODUCT_WEIGHTS[productId] || 300;
+                return total + (weight * item.quantity);
+            }, 0);
+        }
+
+        async function getDeliveryRate() {
+            const city    = document.getElementById('city').value.trim();
+            const state   = document.getElementById('state').value.trim();
+            const street  = document.getElementById('streetAddress').value.trim();
+            const country = document.getElementById('country').value.trim();
+
+            if (!city || !state) {
+                showRateError('Please enter your city and state first.');
+                return;
+            }
+            if (cart.length === 0) {
+                showRateError('Add items to your cart first.');
+                return;
+            }
+
+            // Reset UI
+            hideRateError();
+            document.getElementById('freeDeliveryBadge').classList.add('hidden');
+            document.getElementById('freeDeliveryBadge').classList.remove('flex');
+            document.getElementById('courierList').classList.add('hidden');
+            document.getElementById('rateLoading').classList.remove('hidden');
+            document.getElementById('rateLoading').classList.add('flex');
+            selectedCourier = null;
+            deliveryFee     = 0;
+            isFreeDelivery  = false;
+
+            // Check for free Uyo delivery
+            if (isUyoDelivery(city, state)) {
+                isFreeDelivery = true;
+                deliveryFee    = 0;
+                document.getElementById('rateLoading').classList.add('hidden');
+                document.getElementById('rateLoading').classList.remove('flex');
+                document.getElementById('freeDeliveryBadge').classList.remove('hidden');
+                document.getElementById('freeDeliveryBadge').classList.add('flex');
+                updateShippingDisplay(0, true);
+                lucide.createIcons();
+                return;
+            }
+
+            // Call Shipbubble API
+            try {
+                const payload = {
+                    delivery: {
+                        name:    document.getElementById('customerName').value.trim() || 'Customer',
+                        email:   document.getElementById('customerEmail').value.trim() || 'customer@email.com',
+                        phone:   document.getElementById('customerPhone').value.trim() || '08000000000',
+                        address: `${street}, ${city}, ${state}`
+                    },
+                    items: cart.map(item => ({
+                        name:        item.name,
+                        description: item.description || 'Fashion item',
+                        unit_weight: String((PRODUCT_WEIGHTS[item.id.split('_')[0]] || 300) / 1000),
+                        unit_amount: String(item.priceNGN),
+                        quantity:    String(item.quantity)
+                    })),
+                    dimension: { length: 35, width: 30, height: 10 }
+                };
+
+                console.log('[Shipbubble] Sending payload:', payload);
+
+                const res = await fetch(SHIPBUBBLE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawText = await res.text();
+                console.log('[Shipbubble] Raw response:', rawText);
+
+                let data;
+                try { data = JSON.parse(rawText); }
+                catch(e) {
+                    throw new Error('Invalid response: ' + rawText.slice(0, 200));
+                }
+
+                document.getElementById('rateLoading').classList.add('hidden');
+                document.getElementById('rateLoading').classList.remove('flex');
+
+                // Shipbubble returns data.data.couriers (not rates)
+                if (data && data.status === 'success' && data.data) {
+                    const couriers = data.data.couriers || [];
+                    if (couriers.length > 0) {
+                        renderCourierOptions(couriers);
+                    } else {
+                        showRateError('No couriers available for this route. A flat rate of NGN 3,500 will apply.');
+                        deliveryFee = 3500;
+                        selectedCourier = { name: 'Standard Delivery', price: 3500 };
+                        updateShippingDisplay(3500, false);
+                    }
+                } else {
+                    const errMsg = data?.message || 'Could not fetch rates.';
+                    console.warn('[Shipbubble] Error response:', data);
+                    showRateError(errMsg + ' A flat rate of NGN 3,500 will apply.');
+                    deliveryFee = 3500;
+                    selectedCourier = { name: 'Standard Delivery', price: 3500 };
+                    updateShippingDisplay(3500, false);
+                }
+
+            } catch (err) {
+                console.error('[Shipbubble] Error:', err);
+                document.getElementById('rateLoading').classList.add('hidden');
+                document.getElementById('rateLoading').classList.remove('flex');
+                showRateError('Could not fetch rates. A flat rate of NGN 3,500 will apply.');
+                deliveryFee = 3500;
+                selectedCourier = { name: 'Standard Delivery', price: 3500 };
+                updateShippingDisplay(3500, false);
+            }
+        }
+
+        function renderCourierOptions(rates) {
+            const list = document.getElementById('courierList');
+            list.innerHTML = '';
+
+            // Sort by price ascending
+            const sorted = [...rates].sort((a, b) => (a.total || 0) - (b.total || 0));
+
+            sorted.forEach((rate, i) => {
+                const price    = rate.rate_card_amount || rate.total || 0;
+                const name     = rate.courier_name || 'Courier';
+                const duration = rate.delivery_eta || '2-4 business days';
+                const logo     = rate.courier_image || '';
+
+                const div  = document.createElement('div');
+                div.className = 'courier-option' + (i === 0 ? ' selected' : '');
+                div.onclick   = () => selectCourier(div, name, price, rate.courier_id || rate.id || name);
+                div.innerHTML = `
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            ${logo ? `<img src="${logo}" alt="${name}" class="w-8 h-8 object-contain rounded">` : `<div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-xs font-bold">${name.charAt(0)}</div>`}
+                            <div>
+                                <p class="text-white text-sm font-semibold">${name}</p>
+                                <p class="text-zinc-500 text-xs">${duration}</p>
+                            </div>
+                        </div>
+                        <p class="text-white font-bold text-sm flex-shrink-0">${formatNGN(price)}</p>
+                    </div>`;
+                list.appendChild(div);
+
+                // Auto-select cheapest
+                if (i === 0) {
+                    selectedCourier = { name, price, id: rate.courier_id || rate.id || name };
+                    deliveryFee     = price;
+                    updateShippingDisplay(price, false);
+                }
+            });
+
+            list.classList.remove('hidden');
+            updateCartUI();
+        }
+
+        function selectCourier(el, name, price, id) {
+            document.querySelectorAll('.courier-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedCourier = { name, price, id };
+            deliveryFee     = price;
+            updateShippingDisplay(price, false);
+            updateCartUI();
+        }
+
+        function updateShippingDisplay(fee, isFree) {
+            const el = document.getElementById('shippingDisplay');
+            if (isFree) {
+                el.textContent  = 'FREE 🎉';
+                el.className    = 'text-green-400 font-semibold';
+            } else if (fee > 0) {
+                el.textContent  = formatNGN(fee);
+                el.className    = 'text-white font-semibold';
+            } else {
+                el.textContent  = 'Select courier above';
+                el.className    = 'text-zinc-500';
+            }
+        }
+
+        function showRateError(msg) {
+            const el = document.getElementById('rateError');
+            document.getElementById('rateErrorMsg').textContent = msg;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+        function hideRateError() {
+            const el = document.getElementById('rateError');
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        function checkoutWithPaystack() {
+            if (cart.length === 0) { alert('Your cart is empty. Add some items first!'); return; }
+
+            const name    = document.getElementById('customerName').value.trim();
+            const email   = document.getElementById('customerEmail').value.trim();
+            const phone   = document.getElementById('customerPhone').value.trim();
+            const street  = document.getElementById('streetAddress').value.trim();
+            const city    = document.getElementById('city').value.trim();
+            const state   = document.getElementById('state').value.trim();
+            const country = document.getElementById('country').value.trim();
+
+            if (!name)   { alert('Please enter your full name.');         document.getElementById('customerName').focus();    return; }
+            if (!email)  { alert('Please enter your email address.');     document.getElementById('customerEmail').focus();   return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); document.getElementById('customerEmail').focus(); return; }
+            if (!phone)  { alert('Please enter your phone number.');      document.getElementById('customerPhone').focus();   return; }
+            if (!street) { alert('Please enter your street address.');    document.getElementById('streetAddress').focus();   return; }
+            if (!city)   { alert('Please enter your city.');              document.getElementById('city').focus();            return; }
+            if (!state)  { alert('Please enter your state.');             document.getElementById('state').focus();           return; }
+            if (!country){ alert('Please enter your country.');           document.getElementById('country').focus();         return; }
+
+            // Validate delivery rate selected
+            if (!isFreeDelivery && !selectedCourier) {
+                alert('Please click "Get Rate" to fetch delivery rates and select a courier before paying.');
+                document.getElementById('getRateBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const subtotal     = cart.reduce((s, i) => s + (i.priceNGN * i.quantity), 0);
+            const shipFee      = (typeof deliveryFee !== 'undefined' && deliveryFee > 0) ? deliveryFee : 0;
+            const grandTotal   = subtotal + shipFee;
+            const totalKobo    = grandTotal * 100;
+            const cashbackAmt  = cashbackApplied ? Math.round(subtotal * CASHBACK_PERCENT) : 0;
+            const reference    = 'TIMENON_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
+            const fullAddr     = `${street}, ${city}, ${state}, ${country}`;
+            const orderItems   = cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+            const courierName  = selectedCourier ? selectedCourier.name : (isFreeDelivery ? 'Free (Uyo)' : 'Not selected');
+
+            try {
+                const handler = PaystackPop.setup({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email,
+                    amount: totalKobo,
+                    currency: 'NGN',
+                    ref: reference,
+                    metadata: {
+                        custom_fields: [
+                            { display_name: 'Customer Name',      variable_name: 'customer_name',    value: name },
+                            { display_name: 'Phone Number',       variable_name: 'phone',             value: phone },
+                            { display_name: 'Delivery Address',   variable_name: 'address',           value: fullAddr },
+                            { display_name: 'Order Items',        variable_name: 'order_items',       value: orderItems },
+                            { display_name: 'Referral Code Used', variable_name: 'referral_code',     value: appliedReferralCode || 'None' },
+                            { display_name: 'Cashback Earned',    variable_name: 'cashback_earned',   value: cashbackApplied ? `NGN ${cashbackAmt.toLocaleString()} (10%)` : 'None' },
+                            { display_name: 'Delivery Fee',       variable_name: 'delivery_fee',      value: shipFee > 0 ? `NGN ${shipFee.toLocaleString()}` : 'Free' },
+                            { display_name: 'Courier',            variable_name: 'courier',           value: courierName },
+                        ]
+                    },
+                    callback: function(response) {
+                        const orderData = {
+                            customerName:    name,
+                            customerEmail:   email,
+                            customerPhone:   phone,
+                            deliveryAddress: fullAddr,
+                            orderReference:  response.reference,
+                            orderTotal:      subtotal,
+                            cashbackEarned:  cashbackAmt,
+                            referralCode:    appliedReferralCode || '',
+                            orderItems:      orderItems,
+                            orderDate:       new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' })
+                        };
+
+                        // ALWAYS log to sheet when referral code was used
+                        if (appliedReferralCode) {
+                            logCashbackToSheet(orderData);
+                        }
+
+                        // Show the right success screen
+                        if (cashbackApplied && cashbackAmt > 0) {
+                            // Show cashback earned modal
+                            document.getElementById('successDefault').classList.add('hidden');
+                            document.getElementById('successCashback').classList.remove('hidden');
+                            document.getElementById('successReferenceCashback').textContent = response.reference;
+                            document.getElementById('successOrderTotal').textContent = formatNGN(grandTotal);
+                            document.getElementById('cashbackEarnedAmount').textContent = formatNGN(cashbackAmt);
+                        } else {
+                            // Plain success modal
+                            document.getElementById('successDefault').classList.remove('hidden');
+                            document.getElementById('successCashback').classList.add('hidden');
+                            document.getElementById('successReference').textContent = response.reference;
+                        }
+
+                        document.getElementById('successModal').classList.add('active');
+                        lucide.createIcons();
+
+                        // ── Meta Pixel: Purchase Event ──
+                        if (typeof fbq !== 'undefined') {
+                            fbq('track', 'Purchase', {
+                                value:        subtotal,
+                                currency:     'NGN',
+                                content_ids:  cart.map(i => i.id),
+                                content_type: 'product',
+                                contents:     cart.map(i => ({
+                                    id:       i.id,
+                                    quantity: i.quantity,
+                                    item_price: i.priceNGN
+                                })),
+                                num_items:    cart.reduce((s, i) => s + i.quantity, 0),
+                                order_id:     response.reference
+                            });
+                        }
+
+                        // Reset cart & referral state
+                        cart = []; appliedReferralCode = null; cashbackApplied = false;
+                        deliveryFee = 0; selectedCourier = null; isFreeDelivery = false;
+                        updateShippingDisplay(0, false);
+                        document.getElementById('referralCode').value = '';
+                        document.getElementById('referralSuccess').classList.remove('show');
+                        saveCart();
+                        if (document.getElementById('cartDrawer').classList.contains('open')) toggleCart();
+                    },
+                    onClose: function() { console.log('Payment window closed'); }
+                });
+                handler.openIframe();
+            } catch(err) {
+                console.error('Paystack error:', err);
+                alert('Payment error: ' + err.message);
+            }
+        }
+
+        // ── LOG CASHBACK TO GOOGLE SHEET ──
+        async function logCashbackToSheet(data) {
+            if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+                console.warn('Apps Script URL not set — cashback not logged remotely.');
+                // Still update UI as if saved
+                showCashbackSaved(data.cashbackEarned);
+                return;
+            }
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // required for Apps Script
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                showCashbackSaved(data.cashbackEarned);
+            } catch(err) {
+                console.warn('Could not log cashback:', err);
+                showCashbackSaved(data.cashbackEarned); // still show success to user
+            }
+        }
+
+        function showCashbackSaved(cashbackAmt) {
+            const saving = document.getElementById('savingIndicator');
+            const saved  = document.getElementById('savedIndicator');
+            if (saving) saving.classList.add('hidden');
+            if (saved)  {
+                saved.classList.remove('hidden');
+                saved.classList.add('flex');
+            }
+            // Update wallet balance (cumulative from localStorage)
+            const walletKey = 'timenonWallet_' + document.getElementById('customerEmail') ? 
+                              (document.getElementById('customerEmail').value || 'guest') : 'guest';
+            const existing  = parseInt(localStorage.getItem(walletKey) || '0');
+            const newBal    = existing + cashbackAmt;
+            localStorage.setItem(walletKey, newBal);
+            const walletEl  = document.getElementById('successWalletBalance');
+            if (walletEl) walletEl.textContent = formatNGN(newBal) + ' total';
+        }
+
+        function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
+
+        // ════════════════════════════════════════
+        // AMBASSADOR FORM SUBMISSION
+        // ════════════════════════════════════════
+        function submitAmbassadorForm() {
+            const name     = document.getElementById('ambName').value.trim();
+            const email    = document.getElementById('ambEmail').value.trim();
+            const handle   = document.getElementById('ambHandle').value.trim();
+            const platform = document.getElementById('ambPlatform').value;
+            const bio      = document.getElementById('ambBio').value.trim();
+
+            if (!name)     { alert('Please enter your full name.');         document.getElementById('ambName').focus();     return; }
+            if (!email)    { alert('Please enter your email address.');     document.getElementById('ambEmail').focus();    return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); document.getElementById('ambEmail').focus(); return; }
+            if (!handle)   { alert('Please enter your social media handle.'); document.getElementById('ambHandle').focus(); return; }
+            if (!platform) { alert('Please select your main platform.');    document.getElementById('ambPlatform').focus(); return; }
+            if (!bio)      { alert('Please tell us about yourself.');       document.getElementById('ambBio').focus();      return; }
+
+            // Build mailto link — this opens the user's mail client pre-filled
+            const subject = encodeURIComponent(`Ambassador Application — ${name} (@${handle})`);
+            const body = encodeURIComponent(
+`New Timenon Ambassador Application
+
+Name: ${name}
+Email: ${email}
+Handle: @${handle}
+Platform: ${platform}
+
+About:
+${bio}
+
+---
+Submitted via timenon.com Ambassador Form`
+            );
+            const mailtoLink = `mailto:timenontheconfidencebrand@gmail.com?subject=${subject}&body=${body}`;
+
+            // Open the mailto
+            window.location.href = mailtoLink;
+
+            // Show confirmation after a short delay (mailto may navigate away briefly)
+            setTimeout(() => {
+                document.getElementById('ambassadorSuccessModal').classList.add('active');
+                // Clear form
+                document.getElementById('ambName').value     = '';
+                document.getElementById('ambEmail').value    = '';
+                document.getElementById('ambHandle').value   = '';
+                document.getElementById('ambPlatform').value = '';
+                document.getElementById('ambBio').value      = '';
+                lucide.createIcons();
+            }, 800);
+        }
+
+        function closeAmbassadorModal() { document.getElementById('ambassadorSuccessModal').classList.remove('active'); }
+
+        // ════════════════════════════════════════
+        // SCROLL & NAVBAR
+        // ════════════════════════════════════════
+        // Opt-in to animations only after JS loads
+        document.body.classList.add('js-animate');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                el.classList.add('active');
+            } else {
+                observer.observe(el);
+            }
+        });
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('bg-black/80', window.pageYOffset > 100);
+            navbar.classList.toggle('backdrop-blur-md', window.pageYOffset > 100);
+            navbar.classList.toggle('border-b', window.pageYOffset > 100);
+            navbar.classList.toggle('border-zinc-800', window.pageYOffset > 100);
+        });
+
+        // ════════════════════════════════════════
+        // DREAM SLIDER POPUP
+        // ════════════════════════════════════════
+        const dreamLabels = {
+            1:  { text: "Just a tiny spark... but sparks start fires 🌱",     emoji: "🌱" },
+            2:  { text: "A little flicker. Fan it harder. 🕯️",                emoji: "🕯️" },
+            3:  { text: "Growing. You're starting to believe. ✨",             emoji: "✨" },
+            4:  { text: "Getting real. Don't stop now. 💪",                    emoji: "💪" },
+            5:  { text: "Big enough to scare you. 👀",                        emoji: "👀" },
+            6:  { text: "Now we're talking. You feel it. 🚀",                  emoji: "🚀" },
+            7:  { text: "This dream keeps you up at night. 🌙",               emoji: "🌙" },
+            8:  { text: "Massive. You were built for this. ⚡",               emoji: "⚡" },
+            9:  { text: "Almost off the charts. Unstoppable. 🖤",             emoji: "🖤" },
+            10: { text: "MAXIMUM. Difficult. Not impossible. 🔥",             emoji: "🔥" },
+        };
+
+        const congratsMessages = {
+            1:  "Every legend started at 1. The fact you're here means you're already moving. Wear something that reminds you of that.",
+            2:  "Small dreams grow. And the right environment accelerates them. Start dressing like the version of you that made it.",
+            3:  "You're waking up to what's possible. Timenon is for those in the middle of that awakening.",
+            4:  "Getting serious. The gap between dreaming and doing is identity. Start wearing yours.",
+            5:  "Halfway is where most people quit. You're not most people. Wear that.",
+            6:  "You've crossed the line into believer territory. Now dress the part.",
+            7:  "Dreams that keep you up at night deserve a brand that matches the energy.",
+            8:  "You're built different. Timenon exists for exactly this kind of person.",
+            9:  "You're borderline obsessed with your dream. We respect it. Gear up accordingly.",
+            10: "Dreams that big don't fit in ordinary clothes. Wear the identity of a dreamer — gear built for people who refuse to settle.",
+        };
+
+        function updateDreamSlider(val) {
+            val = parseInt(val);
+            // Update big number
+            document.getElementById('dreamNumber').textContent = val;
+            // Update label
+            document.getElementById('dreamLabel').textContent = dreamLabels[val].text;
+            // Update slider fill colour directly
+            const pct = ((val - 1) / 9) * 100;
+            const slider = document.getElementById('dreamSlider');
+            slider.style.background = `linear-gradient(to right, #ffffff ${pct}%, #3f3f46 ${pct}%)`;
+        }
+
+        function submitDream() {
+            const val  = parseInt(document.getElementById('dreamSlider').value);
+            const data = dreamLabels[val];
+
+            // Fill congrats screen
+            document.getElementById('dreamEmoji').textContent         = data.emoji;
+            document.getElementById('congratsHeadline').innerHTML     = `A <span>${val}</span>/10 dream.`;
+            document.getElementById('congratsMessage').textContent    = congratsMessages[val];
+            document.getElementById('congratsBadge').textContent      = val + '/10';
+            document.getElementById('congratsBadgeEmoji').textContent = data.emoji;
+
+            // Swap screens
+            const sliderScreen   = document.getElementById('dreamSliderScreen');
+            const congratsScreen = document.getElementById('dreamCongratsScreen');
+
+            sliderScreen.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            sliderScreen.style.opacity    = '0';
+            sliderScreen.style.transform  = 'scale(0.9) translateY(-20px)';
+
+            setTimeout(() => {
+                sliderScreen.style.display  = 'none';
+                congratsScreen.style.display = 'block';
+                congratsScreen.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    congratsScreen.classList.add('show');
+                    lucide.createIcons();
+                });
+            }, 320);
+        }
+
+        function handleDreamOverlayClick(e) {
+            // Only close if clicking the overlay itself, not children
+            if (e.target === document.getElementById('dreamOverlay')) {
+                closeDreamPopup();
+            }
+        }
+
+        function closeDreamPopup() {
+            const overlay = document.getElementById('dreamOverlay');
+            overlay.classList.remove('show');
+            sessionStorage.setItem('dreamDismissed', '1');
+        }
+
+        function initDreamPopup() {
+            if (sessionStorage.getItem('dreamDismissed')) return;
+
+            // Show after scarcity popup has had time to be seen/dismissed (8s)
+            setTimeout(() => {
+                if (sessionStorage.getItem('dreamDismissed')) return;
+                const overlay = document.getElementById('dreamOverlay');
+                overlay.classList.add('show');
+                // Init slider fill
+                updateDreamSlider(5);
+                lucide.createIcons();
+            }, 8000);
+        }
+
+        initDreamPopup();
+
+        // ════════════════════════════════════════
+        // SCARCITY POPUP
+        // ════════════════════════════════════════
+        function closeScarcityPopup() {
+            const overlay = document.getElementById('scarcityOverlay');
+            const popup   = document.getElementById('scarcityPopup');
+            popup.classList.remove('show');
+            setTimeout(() => { overlay.style.display = 'none'; }, 500);
+            // Remember closed for this session so it doesn't reappear on refresh
+            sessionStorage.setItem('scarcityDismissed', '1');
+        }
+
+        function initScarcityPopup() {
+            if (sessionStorage.getItem('scarcityDismissed')) {
+                document.getElementById('scarcityOverlay').style.display = 'none';
+                return;
+            }
+
+            // Randomise viewer count slightly for authenticity
+            const viewers = Math.floor(Math.random() * 12) + 18; // 18–30
+            const viewerEl = document.getElementById('viewerCount');
+            if (viewerEl) viewerEl.textContent = viewers + ' people';
+
+            // Show popup after 2.5 seconds
+            setTimeout(() => {
+                document.getElementById('scarcityPopup').classList.add('show');
+                lucide.createIcons();
+            }, 2500);
+
+            // Countdown: viewer count ticks up/down every 8s for realism
+            setInterval(() => {
+                const current = parseInt(viewerEl.textContent);
+                const delta   = Math.random() > 0.5 ? 1 : -1;
+                const next    = Math.min(40, Math.max(12, current + delta));
+                viewerEl.textContent = next + ' people';
+            }, 8000);
+        }
+
+        initScarcityPopup();
+
+        // Init
+        updateCartUI();
+    </script>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- WHATSAPP WIDGET                           -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="wa-widget" id="waWidget">
+        <!-- Chat bubble -->
+        <div class="wa-bubble" id="waBubble">
+            <div class="wa-close" onclick="dismissWaBubble()">✕</div>
+            <p>👋 <strong>Hey there!</strong><br>Got questions about sizing, delivery or your order? Chat with us on WhatsApp — we reply fast.</p>
+        </div>
+
+        <!-- WhatsApp button -->
+        <div style="position:relative;">
+            <a class="wa-btn"
+               href="https://wa.me/2349014067515?text=Hi%20Timenon!%20I%20have%20a%20question%20about%20my%20order."
+               target="_blank"
+               rel="noopener noreferrer"
+               title="Chat with Timenon on WhatsApp"
+               onclick="dismissWaBubble()">
+                <!-- WhatsApp SVG icon -->
+                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.002 2C8.27 2 2 8.268 2 15.998c0 2.49.65 4.83 1.786 6.858L2 30l7.338-1.762A13.946 13.946 0 0016.002 30C23.73 30 30 23.73 30 16.002 30 8.27 23.73 2 16.002 2zm0 25.538a11.52 11.52 0 01-5.886-1.608l-.422-.25-4.354 1.046 1.077-4.24-.276-.436A11.494 11.494 0 014.46 16c0-6.37 5.176-11.54 11.542-11.54 6.368 0 11.538 5.17 11.538 11.54 0 6.366-5.17 11.538-11.538 11.538zm6.32-8.642c-.346-.174-2.05-1.01-2.368-1.126-.316-.114-.546-.172-.778.174-.23.346-.894 1.126-1.096 1.358-.2.23-.402.258-.748.086-.346-.174-1.46-.538-2.78-1.714-1.028-.916-1.722-2.046-1.924-2.392-.202-.346-.022-.532.152-.704.156-.156.346-.404.52-.606.172-.202.228-.346.344-.576.114-.232.058-.434-.028-.608-.088-.172-.778-1.876-1.066-2.568-.282-.674-.568-.582-.778-.592l-.664-.012c-.23 0-.604.086-.92.432-.316.346-1.208 1.18-1.208 2.876s1.236 3.336 1.408 3.566c.172.232 2.432 3.712 5.892 5.208.824.356 1.466.568 1.968.728.826.264 1.578.226 2.172.138.662-.1 2.05-.838 2.34-1.648.29-.81.29-1.504.202-1.648-.086-.144-.316-.23-.662-.404z"/>
+                </svg>
+            </a>
+            <div class="wa-notification-dot" id="waNotifDot"></div>
+        </div>
+    </div>
+
+    <script>
+        // ── WhatsApp Widget Logic ──
+        let waBubbleDismissed = false;
+
+        function dismissWaBubble() {
+            document.getElementById('waBubble').classList.remove('show');
+            document.getElementById('waNotifDot').style.display = 'none';
+            waBubbleDismissed = true;
+            sessionStorage.setItem('waBubbleDismissed', '1');
+        }
+
+        function initWaWidget() {
+            if (sessionStorage.getItem('waBubbleDismissed')) {
+                document.getElementById('waNotifDot').style.display = 'none';
+                return;
+            }
+            // Show bubble after 6 seconds (after scarcity popup has been seen)
+            setTimeout(() => {
+                if (!waBubbleDismissed) {
+                    document.getElementById('waBubble').classList.add('show');
+                }
+            }, 6000);
+
+            // Auto-hide bubble after 12 seconds if not interacted with
+            setTimeout(() => {
+                if (!waBubbleDismissed) {
+                    document.getElementById('waBubble').classList.remove('show');
+                }
+            }, 18000);
+        }
+
+        initWaWidget();
+    </script>
+</body>
+</html>
