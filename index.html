@@ -2351,7 +2351,8 @@
                     }
                 } else {
                     const errMsg = data?.message || 'Could not fetch rates.';
-                    console.warn('[Shipbubble] Error response:', data);
+                    const detail = data?.detail ? JSON.stringify(data.detail) : '';
+                    console.warn('[Shipbubble] Error:', errMsg, detail);
                     showRateError(errMsg + ' A flat rate of NGN 3,500 will apply.');
                     deliveryFee = 3500;
                     selectedCourier = { name: 'Standard Delivery', price: 3500 };
