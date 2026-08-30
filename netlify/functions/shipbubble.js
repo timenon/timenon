@@ -32,6 +32,16 @@ const API_KEY = 'sb_prod_90b8d67fc0c70382a6f5b63de7dcf9b1497a30118f7e930085086eb
 const SB_HOST = 'api.shipbubble.com';
 const AUTH    = { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' };
 
+// Uyo, Akwa Ibom coordinates for high-accuracy validation
+const SENDER_PAYLOAD = {
+    name:      'Timenon',
+    email:     'timenon.official@gmail.com',
+    phone:     '+2349014067515',
+    address:   '48 Itiam Street, Uyo, Akwa Ibom, Nigeria',
+    latitude:   5.0510,
+    longitude:  7.9328
+};
+
 exports.handler = async function(event) {
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers: CORS, body: '' };
@@ -44,100 +54,81 @@ exports.handler = async function(event) {
         const payload = JSON.parse(event.body);
         const { delivery, items, dimension } = payload;
 
-        console.log('Delivery address:', JSON.stringify(delivery));
-
-        // Step 1: Get existing registered addresses to find sender code
-        const addressListRes = await httpsRequest('GET', SB_HOST, '/v1/shipping/address', AUTH, null);
-        console.log('Address list response:', JSON.stringify(addressListRes.body));
-
+        // Step 1: Check registered addresses for existing sender code
         let senderCode = null;
+        const addrListRes = await httpsRequest('GET', SB_HOST, '/v1/shipping/address', AUTH, null);
+        console.log('Registered addresses:', JSON.stringify(addrListRes.body));
 
-        if (addressListRes.body && addressListRes.body.data && Array.isArray(addressListRes.body.data)) {
-            // Find the Uyo/Timenon address
-            const sender = addressListRes.body.data.find(a =>
+        if (addrListRes.body?.data && Array.isArray(addrListRes.body.data)) {
+            const match = addrListRes.body.data.find(a =>
+                (a.email || '').toLowerCase().includes('timenon') ||
                 (a.address || '').toLowerCase().includes('itiam') ||
-                (a.city || '').toLowerCase().includes('uyo') ||
-                (a.name || '').toLowerCase().includes('timenon') ||
-                (a.email || '').toLowerCase().includes('timenon')
+                (a.city || '').toLowerCase().includes('uyo')
             );
-            if (sender) {
-                senderCode = sender.address_code || sender.id;
-                console.log('Found sender address code:', senderCode, 'for:', sender.address);
-            } else {
-                // Log all addresses so we can see what's there
-                console.log('All registered addresses:', addressListRes.body.data.map(a =>
-                    `code:${a.address_code || a.id} name:${a.name} city:${a.city} addr:${a.address}`
-                ).join(' | '));
+            if (match) {
+                senderCode = match.address_code || match.id;
+                console.log('Found registered sender code:', senderCode);
             }
         }
 
-        // Step 2: If no sender code found, validate the address fresh
+        // Step 2: Validate sender with lat/lng if no code found
         if (!senderCode) {
-            console.log('Sender not found in list, validating fresh...');
-            const senderValidate = await httpsRequest('POST', SB_HOST, '/v1/shipping/address/validate', AUTH, {
-                name:    'Timenon',
-                email:   'timenon.official@gmail.com',
-                phone:   '+2349014067515',
-                address: '48 Itiam Street, Uyo, Akwa Ibom, Nigeria'
-            });
-            console.log('Sender validate result:', JSON.stringify(senderValidate.body));
+            console.log('Validating sender address with coordinates...');
+            const senderRes = await httpsRequest('POST', SB_HOST, '/v1/shipping/address/validate', AUTH, SENDER_PAYLOAD);
+            console.log('Sender validation:', JSON.stringify(senderRes.body));
 
-            if (senderValidate.body && senderValidate.body.data && senderValidate.body.data.address_code) {
-                senderCode = senderValidate.body.data.address_code;
-                console.log('Got fresh sender code:', senderCode);
+            if (senderRes.body?.data?.address_code) {
+                senderCode = senderRes.body.data.address_code;
+                console.log('Got sender code:', senderCode);
             } else {
                 return {
                     statusCode: 200, headers: CORS,
                     body: JSON.stringify({
                         status: 'error',
-                        message: 'Sender address validation failed. Please contact support.',
-                        detail: senderValidate.body
+                        message: 'Sender address validation failed',
+                        detail: senderRes.body
                     })
                 };
             }
         }
 
         // Step 3: Validate receiver address
-        const receiverValidate = await httpsRequest('POST', SB_HOST, '/v1/shipping/address/validate', AUTH, {
+        console.log('Validating receiver:', JSON.stringify(delivery));
+        const receiverRes = await httpsRequest('POST', SB_HOST, '/v1/shipping/address/validate', AUTH, {
             name:    delivery.name  || 'Customer',
             email:   delivery.email || 'customer@timenon.com',
             phone:   delivery.phone || '08000000000',
             address: delivery.address
         });
-        console.log('Receiver validate result:', JSON.stringify(receiverValidate.body));
+        console.log('Receiver validation:', JSON.stringify(receiverRes.body));
 
-        let receiverCode = null;
-        if (receiverValidate.body && receiverValidate.body.data && receiverValidate.body.data.address_code) {
-            receiverCode = receiverValidate.body.data.address_code;
-        } else {
+        if (!receiverRes.body?.data?.address_code) {
             return {
                 statusCode: 200, headers: CORS,
                 body: JSON.stringify({
                     status: 'error',
-                    message: 'Could not validate delivery address. Please check your address details.',
-                    detail: receiverValidate.body
+                    message: 'Could not validate delivery address. Try entering a more detailed address.',
+                    detail: receiverRes.body
                 })
             };
         }
+        const receiverCode = receiverRes.body.data.address_code;
 
-        // Step 4: Get categories
+        // Step 4: Get clothing category ID
         const catsRes = await httpsRequest('GET', SB_HOST, '/v1/shipping/package/categories', AUTH, null);
         let categoryId = 4;
-        if (catsRes.body && catsRes.body.data && Array.isArray(catsRes.body.data)) {
-            console.log('Categories:', catsRes.body.data.map(c => `${c.id}:${c.name}`).join(', '));
-            const clothing = catsRes.body.data.find(c =>
-                /cloth|fashion|apparel|wear|textile/i.test(c.name || '')
-            );
-            if (clothing) { categoryId = clothing.id; console.log('Using category:', clothing.name, categoryId); }
+        if (catsRes.body?.data && Array.isArray(catsRes.body.data)) {
+            console.log('Available categories:', catsRes.body.data.map(c => `${c.id}:${c.name}`).join(', '));
+            const cat = catsRes.body.data.find(c => /cloth|fashion|apparel|wear/i.test(c.name || ''));
+            if (cat) categoryId = cat.id;
         }
 
-        // Step 5: Pickup date
+        // Step 5: Pickup date (tomorrow if after 5PM WAT)
         const now = new Date();
-        const watHour = (now.getUTCHours() + 1) % 24;
-        if (watHour >= 17) now.setDate(now.getDate() + 1);
+        if ((now.getUTCHours() + 1) % 24 >= 17) now.setDate(now.getDate() + 1);
         const pickupDate = now.toISOString().split('T')[0];
 
-        // Step 6: Fetch rates
+        // Step 6: Fetch shipping rates
         const ratesPayload = {
             sender_address_code:   senderCode,
             reciever_address_code: receiverCode,
@@ -146,15 +137,14 @@ exports.handler = async function(event) {
             package_items:         items,
             package_dimension:     dimension || { length: 35, width: 30, height: 10 }
         };
-
-        console.log('Rates payload:', JSON.stringify(ratesPayload));
+        console.log('Fetching rates:', JSON.stringify(ratesPayload));
         const ratesRes = await httpsRequest('POST', SB_HOST, '/v1/shipping/fetch_rates', AUTH, ratesPayload);
         console.log('Rates response:', JSON.stringify(ratesRes.body));
 
         return { statusCode: 200, headers: CORS, body: JSON.stringify(ratesRes.body) };
 
     } catch (err) {
-        console.error('Function error:', err.message, err.stack);
+        console.error('Error:', err.message);
         return {
             statusCode: 500, headers: CORS,
             body: JSON.stringify({ status: 'error', message: err.message })
